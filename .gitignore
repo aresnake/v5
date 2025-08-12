@@ -12,4 +12,13 @@ venv/
 *.7z
 *.tar.gz
 *.tar.xz
+# --- hygiene ---
+*.bak
+*.log
+*.tmp
+*.cache
+*.orig
 
+# logs & sorties runtime
+ares/logs/**
+ares/summary/*.json

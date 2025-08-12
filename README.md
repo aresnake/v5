@@ -60,7 +60,7 @@ Blade est un addon ultra-avancé pour Blender, conçu pour permettre le contrôl
 
 
 
-1\. \*\*Zippez le dossier `ares/`\*\* uniquement :  
+1\. \*\*Zippez le dossier `ares/`\*\* uniquement :
 
 &nbsp;  Depuis `blade-v5/`, faites clic droit → compresser `ares/` en `blade-v5.zip`
 
@@ -158,11 +158,8 @@ Blender 4.5 active les dépendances suivantes automatiquement :
 
 
 
-✅ Stable  
+✅ Stable
 
-✅ Testé en mode `--background`  
+✅ Testé en mode `--background`
 
 ✅ Fonctionnel avec UI, suggestions, routines, exécutions vocales et logs intelligents
-
-
-

@@ -1,7 +1,0 @@
-[2025-08-11 14:59:16][Text2MeshManager] Provider 'project_bridge' non implémenté (utilise 'offline_stub').
-[2025-08-11 14:59:26][Text2MeshManager] Job failed: Erreur: Bad glTF: json error: Expecting value: line 1 column 1 (char 0)
-
-[2025-08-11 15:23:53][Text2MeshManager] Generated procedural spider.
-[2025-08-11 17:35:00][Text2MeshManager] Generated procedural spider.
-[2025-08-11 18:24:19][Text2MeshManager] Generated procedural spider.
-[2025-08-11 23:29:34][Text2MeshManager] Generated procedural spider.

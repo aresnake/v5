@@ -69,6 +69,3 @@
 
 
 \### ✅ Statut : \*\*STABLE – prêt à l’emploi pour Blender 4.5\*\*
-
-
-
