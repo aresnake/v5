@@ -1,0 +1,7 @@
+﻿ajoute un cube
+ajoute une sphère
+ajoute une lumière
+supprime le cube
+change la couleur en rouge
+ajoute un modificateur subdivision
+active l’affichage en mode solide

@@ -1,0 +1,16 @@
+﻿# Tâches Codex à exécuter
+---
+- task: enrich_intents
+  description: Ajouter des intents vocaux à partir des logs récents
+  source: logs/session_log.json
+  output: config/voice_config.yaml
+
+- task: document_modules
+  description: Générer documentation à partir des fichiers .py
+  modules:
+    - ares/core/intent_parser.py
+    - ares/core/intent_resolver.py
+
+- task: propose_tests
+  description: Générer des tests pour les intents récents
+  based_on: config/voice_config.yaml

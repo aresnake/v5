@@ -1,0 +1,15 @@
+﻿__pycache__/
+*.pyc
+dist/
+venv/
+.venv/
+.devcontainer/
+.idea/
+.vscode/
+.blenderkit/
+.blender/
+*.zip
+*.7z
+*.tar.gz
+*.tar.xz
+

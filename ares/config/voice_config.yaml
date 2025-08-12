@@ -1,0 +1,280 @@
+# voice_config.yaml – Configuration des intents vocaux Blade v5.1
+
+- name: ajouter_cube
+  phrase: ajoute un cube
+  operator: mesh.primitive_cube_add
+  params:
+    location: [0, 0, 0]
+  category: objets
+  description: Ajoute un cube au centre de la scène
+
+- name: ajouter_sphere
+  phrase: ajoute une sphère
+  operator: mesh.primitive_uv_sphere_add
+  params:
+    location: [1, 0, 0]
+  category: objets
+  description: Ajoute une sphère
+
+- name: ajouter_plan
+  phrase: ajoute un plan
+  operator: mesh.primitive_plane_add
+  params:
+    location: [0, 0, 0]
+  category: objets
+  description: Ajoute un plan plat
+
+- name: déplacer_vers_x
+  phrase: déplace l’objet vers X
+  operator: transform.translate
+  params:
+    value: [1, 0, 0]
+  category: transforms
+  description: Déplacement de l’objet actif vers X
+
+- name: rotation_z_45
+  phrase: tourne l’objet de 45 degrés sur Z
+  operator: transform.rotate
+  params:
+    value: 0.7854
+    orient_axis: Z
+  category: transforms
+  description: Rotation de 45° autour de Z
+
+- name: ajouter_subsurf
+  phrase: ajoute un modificateur subdivision
+  operator: object.modifier_add
+  params:
+    type: SUBSURF
+  category: modifiers
+  description: Ajoute un modificateur de subdivision
+
+- name: appliquer_modificateur
+  phrase: applique le modificateur
+  operator: object.modifier_apply
+  params:
+    modifier: Subdivision
+  category: modifiers
+  description: Applique un modificateur nommé Subdivision
+
+- name: ajouter_materiau
+  phrase: ajoute un matériau
+  operator: object.material_slot_add
+  params: {}
+  category: materiau
+  description: Ajoute un slot de matériau
+
+- name: rendre_image
+  phrase: rends l’image
+  operator: render.render
+  params:
+    write_still: True
+  category: rendu
+  description: Lance un rendu d’image
+
+- name: changer_frame_100
+  phrase: va à la frame 100
+  operator: scene.frame_set
+  params:
+    frame: 100
+  category: timeline
+  description: Change la frame courante
+
+- name: enregistrer_fichier
+  phrase: enregistre le fichier
+  operator: wm.save_mainfile
+  params: {}
+  category: systeme
+  description: Sauvegarde du fichier .blend
+
+- name: annuler_action
+  phrase: annule
+  operator: ed.undo
+  params: {}
+  category: systeme
+  description: Annule la dernière action
+
+- name: changer_vue_solide
+  phrase: passe en vue solide
+  operator: view3d.view_persportho
+  params: {}
+  category: viewport
+  description: Bascule entre perspective et orthographique
+
+- name: zoom_vue
+  phrase: zoom sur la vue
+  operator: view3d.zoom
+  params: {}
+  category: viewport
+  description: Zoom dans la vue active
+
+- name: définir_resolution_1080p
+  phrase: mets la résolution en 1080p
+  operator: bpy.context.scene.render.resolution_x.__setitem__
+  params:
+    index: 0
+    value: 1920
+  category: rendu
+  description: Définit la résolution en 1920x1080 (partie X)
+
+- name: définir_output_mp4
+  phrase: choisis mp4 en sortie
+  operator: bpy.context.scene.render.image_settings.file_format.__setitem__
+  params:
+    value: FFmpeg
+  category: rendu
+  description: Définit la sortie en format vidéo
+
+- name: sélectionner_camera
+  phrase: sélectionne la caméra
+  operator: view3d.view_camera
+  params: {}
+  category: camera
+  description: Active la vue caméra
+
+- name: regler_intensite_lumiere
+  phrase: augmente l’intensité de la lumière
+  operator: bpy.context.object.data.energy.__setitem__
+  params:
+    value: 2000
+  category: light
+  description: Augmente la puissance lumineuse
+
+# --- Spider (procédural) ---
+- name: generer_araignee
+  phrase: génère une araignée
+  operator: blade.generate_spider
+  params:
+    provider: procedural_spider
+    body_radius: 0.25
+    leg_length: 0.9
+    leg_bevel: 0.02
+    auto_scale_to: 2.0
+  category: objets
+  description: Crée une araignée procédurale low-poly (corps + 8 pattes).
+
+# Variante “grande araignée”
+- name: generer_araignee_grande
+  phrase: génère une grande araignée
+  operator: blade.generate_spider
+  params:
+    provider: procedural_spider
+    body_radius: 0.4
+    leg_length: 1.4
+    leg_bevel: 0.03
+    auto_scale_to: 3.0
+  category: objets
+  description: Crée une araignée procédurale plus grande.
+
+# --- Spider via import local (offline_stub) ---
+# Si le GLB/GTLF/FBX/OBJ est vide, le manager bascule en fallback procédural automatiquement.
+- name: generer_araignee_depuis_fichier
+  phrase: importe une araignée
+  operator: blade.generate_spider
+  params:
+    provider: offline_stub
+    # Facultatif : si tu veux forcer un chemin précis, ajoute:
+    # asset_path: "D:/blender/assets/spider.glb"
+    auto_scale_to: 2.0
+  category: objets
+  description: Importe une araignée depuis un fichier local (fallback procédural si asset vide).
+
+# --- Ajustements rapides (rejoue l’opérateur avec d’autres paramètres) ---
+- name: araignee_pattes_longues
+  phrase: pattes plus longues
+  operator: blade.generate_spider
+  params:
+    provider: procedural_spider
+    leg_length: 1.6
+    body_radius: 0.25
+    leg_bevel: 0.02
+    auto_scale_to: 2.0
+  category: objets
+  description: Génère une araignée avec des pattes plus longues.
+
+- name: araignee_pattes_fines
+  phrase: pattes plus fines
+  operator: blade.generate_spider
+  params:
+    provider: procedural_spider
+    leg_bevel: 0.012
+    body_radius: 0.25
+    leg_length: 0.9
+    auto_scale_to: 2.0
+  category: objets
+  description: Génère une araignée avec des pattes plus fines.
+
+- name: deplacer_vers_y
+  phrase: déplace en y
+  operator: transform.translate
+  params:
+    value: [0, 1, 0]
+    constraint_axis: [false, true, false]
+  category: transforms
+  description: Déplace l’objet actif de +1 sur Y
+
+- name: deplacer_vers_z
+  phrase: déplace en z
+  operator: transform.translate
+  params:
+    value: [0, 0, 1]
+    constraint_axis: [false, false, true]
+  category: transforms
+  description: Déplace l’objet actif de +1 sur Z
+
+# --- Couleurs objet actif (schéma v5: operator=context.*, params.value=RGBA) ---
+
+- name: changer_couleur_rouge
+  phrases:
+    - "change en rouge"
+    - "mets en rouge"
+    - "passe en rouge"
+    - "mettre l'objet en rouge"
+    - "couleur rouge"
+  operator: "context.object.active_material.diffuse_color"
+  params:
+    value: [0.64, 0.00, 0.00, 1.00]
+    normalize: "color"        # option supportée par resolver, sécurise le format
+  category: "materiau"
+  description: "Change la couleur du matériau actif en rouge (RGBA)."
+- name: changer_couleur_vert
+  phrases: ["change en vert","mets en vert","passe en vert","couleur verte"]
+  operator: "context.object.active_material.diffuse_color"
+  params: { value: [0.00, 0.64, 0.00, 1.00], normalize: "color" }
+  category: "materiau"
+
+- name: changer_couleur_bleu
+  phrases: ["change en bleu","mets en bleu","passe en bleu","couleur bleue"]
+  operator: "context.object.active_material.diffuse_color"
+  params: { value: [0.00, 0.00, 0.64, 1.00], normalize: "color" }
+  category: "materiau"
+
+- name: changer_couleur_jaune
+  phrases: ["change en jaune","mets en jaune","passe en jaune","couleur jaune"]
+  operator: "context.object.active_material.diffuse_color"
+  params: { value: [0.90, 0.80, 0.05, 1.00], normalize: "color" }
+  category: "materiau"
+
+- name: changer_couleur_blanc
+  phrases: ["change en blanc","mets en blanc","passe en blanc","couleur blanche"]
+  operator: "context.object.active_material.diffuse_color"
+  params: { value: [1.00, 1.00, 1.00, 1.00], normalize: "color" }
+  category: "materiau"
+
+- name: changer_couleur_noir
+  phrases: ["change en noir","mets en noir","passe en noir","couleur noire"]
+  operator: "context.object.active_material.diffuse_color"
+  params: { value: [0.00, 0.00, 0.00, 1.00], normalize: "color" }
+  category: "materiau"
+
+- name: changer_couleur_orange
+  phrases: ["change en orange","mets en orange","passe en orange","couleur orange"]
+  operator: "context.object.active_material.diffuse_color"
+  params: { value: [1.00, 0.50, 0.00, 1.00], normalize: "color" }
+  category: "materiau"
+
+- name: changer_couleur_violet
+  phrases: ["change en violet","mets en violet","passe en violet","couleur violette"]
+  operator: "context.object.active_material.diffuse_color"
+  params: { value: [0.60, 0.20, 0.80, 1.00], normalize: "color" }
+  category: "materiau"

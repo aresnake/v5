@@ -1,0 +1,1 @@
+﻿[INFO] Ceci est un placeholder .wav fictif. Remplacez-le par un vrai fichier audio plus tard.

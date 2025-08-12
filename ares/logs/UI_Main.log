@@ -1,0 +1,82 @@
+[2025-08-11 17:26:47][UI_Main] VoiceEngine import/init failed: module 'speech_recognition' has no attribute 'Recognizer'
+Traceback (most recent call last):
+  File "C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\ui\ui_main.py", line 27, in _get_voice_engine
+    return VoiceEngine()
+           ^^^^^^^^^^^^^
+  File "C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\voice\voice_engine.py", line 9, in __init__
+    self.recognizer = sr.Recognizer()
+                      ^^^^^^^^^^^^^
+AttributeError: module 'speech_recognition' has no attribute 'Recognizer'
+[2025-08-11 17:26:47][UI_Main] VoiceEngine import/init failed: module 'speech_recognition' has no attribute 'Recognizer'
+Traceback (most recent call last):
+  File "C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\ui\ui_main.py", line 27, in _get_voice_engine
+    return VoiceEngine()
+           ^^^^^^^^^^^^^
+  File "C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\voice\voice_engine.py", line 9, in __init__
+    self.recognizer = sr.Recognizer()
+                      ^^^^^^^^^^^^^
+AttributeError: module 'speech_recognition' has no attribute 'Recognizer'
+[2025-08-11 17:34:42][UI_Main] UI : Phrase manuelle envoyée : 'ajoute un cube'
+[2025-08-11 17:34:46][UI_Main] UI : Phrase manuelle envoyée : 'déplace en z'
+[2025-08-11 17:34:47][UI_Main] UI : Phrase manuelle envoyée : 'déplace en z'
+[2025-08-11 18:19:14][UI_Main] UI : Phrase manuelle envoyée : 'déplace en z'
+[2025-08-11 18:20:14][UI_Main] UI : Phrase manuelle envoyée : 'déplace en z'
+[2025-08-11 18:23:36][UI_Main] UI : Voice engine démarré via bouton.
+[2025-08-11 18:23:42][UI_Main] UI : Voice engine stoppé via bouton.
+[2025-08-11 18:23:50][UI_Main] UI : Voice engine démarré via bouton.
+[2025-08-11 18:23:58][UI_Main] UI : Voice engine stoppé via bouton.
+[2025-08-11 18:24:24][UI_Main] UI : Lancement du rendu MP4 en background via UI.
+[2025-08-11 18:26:47][UI_Main] UI : Voice engine démarré via bouton.
+[2025-08-11 18:26:57][UI_Main] UI : Voice engine stoppé via bouton.
+[2025-08-11 18:30:35][UI_Main] UI : Voice engine démarré via bouton.
+[2025-08-11 18:30:43][UI_Main] UI : Voice engine arrêté via bouton.
+[2025-08-11 18:30:52][UI_Main] UI : Voice engine démarré via bouton.
+[2025-08-11 18:31:17][UI_Main] UI : Voice engine arrêté via bouton.
+[2025-08-11 18:35:36][UI_Main] UI : Voice engine démarré via bouton.
+[2025-08-11 18:35:39][UI_Main] UI : Voice engine arrêté via bouton.
+[2025-08-11 18:35:41][UI_Main] cannot import name 'run_pipeline' from 'ares.core.run_pipeline' (C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\core\run_pipeline.py)
+Traceback (most recent call last):
+  File "C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\ui\ui_main.py", line 169, in _run_and_mark
+    from ares.core.run_pipeline import run_pipeline
+ImportError: cannot import name 'run_pipeline' from 'ares.core.run_pipeline' (C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\core\run_pipeline.py)
+[2025-08-11 18:35:43][UI_Main] cannot import name 'run_pipeline' from 'ares.core.run_pipeline' (C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\core\run_pipeline.py)
+Traceback (most recent call last):
+  File "C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\ui\ui_main.py", line 169, in _run_and_mark
+    from ares.core.run_pipeline import run_pipeline
+ImportError: cannot import name 'run_pipeline' from 'ares.core.run_pipeline' (C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\core\run_pipeline.py)
+[2025-08-11 18:35:50][UI_Main] cannot import name 'run_pipeline' from 'ares.core.run_pipeline' (C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\core\run_pipeline.py)
+Traceback (most recent call last):
+  File "C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\ui\ui_main.py", line 169, in _run_and_mark
+    from ares.core.run_pipeline import run_pipeline
+ImportError: cannot import name 'run_pipeline' from 'ares.core.run_pipeline' (C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\core\run_pipeline.py)
+[2025-08-11 23:28:46][UI_Main] VoiceEngine singleton créé et stocké dans driver_namespace.
+[2025-08-11 23:28:46][UI_Main] UI_Main enregistré.
+[2025-08-12 15:57:11][UI_Main] VoiceEngine singleton créé et stocké dans driver_namespace.
+[2025-08-12 15:57:11][UI_Main] UI_Main enregistré.
+[2025-08-12 16:09:53][UI_Main] UI_Main désenregistré.
+[2025-08-12 16:09:55][UI_Main] UI_Main enregistré.
+[2025-08-12 16:11:47][UI_Main] VoiceEngine singleton créé et stocké dans driver_namespace.
+[2025-08-12 16:11:47][UI_Main] UI_Main enregistré.
+[2025-08-12 16:15:38][UI_Main] VoiceEngine singleton créé et stocké dans driver_namespace.
+[2025-08-12 16:15:38][UI_Main] UI_Main enregistré.
+[2025-08-12 16:30:14][UI_Main] UI_Main désenregistré.
+[2025-08-12 16:43:00][UI_Main] VoiceEngine singleton créé et stocké dans driver_namespace.
+[2025-08-12 16:43:00][UI_Main] UI_Main enregistré.
+[2025-08-12 16:44:40][UI_Main] UI_Main désenregistré.
+[2025-08-12 16:44:40][UI_Main] UI_Main enregistré.
+[2025-08-12 16:45:34][UI_Main] UI_Main désenregistré.
+[2025-08-12 16:45:40][UI_Main] VoiceEngine singleton créé et stocké dans driver_namespace.
+[2025-08-12 16:45:40][UI_Main] UI_Main enregistré.
+[2025-08-12 16:45:44][UI_Main] UI_Main désenregistré.
+[2025-08-12 16:45:44][UI_Main] UI_Main enregistré.
+[2025-08-12 16:47:14][UI_Main] UI_Main désenregistré.
+[2025-08-12 16:47:14][UI_Main] UI_Main enregistré.
+[2025-08-12 16:48:01][UI_Main] UI_Main désenregistré.
+[2025-08-12 16:48:15][UI_Main] VoiceEngine singleton créé et stocké dans driver_namespace.
+[2025-08-12 16:48:15][UI_Main] UI_Main enregistré.
+[2025-08-12 17:13:33][UI_Main] UI_Main désenregistré.
+[2025-08-12 17:13:48][UI_Main] VoiceEngine singleton créé et stocké dans driver_namespace.
+[2025-08-12 17:13:48][UI_Main] UI_Main enregistré.
+[2025-08-12 17:13:56][UI_Main] UI_Main désenregistré.
+[2025-08-12 17:13:56][UI_Main] UI_Main enregistré.
+[2025-08-12 17:18:58][UI_Main] UI_Main désenregistré.

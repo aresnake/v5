@@ -1,0 +1,28 @@
+[2025-08-11 17:34:42][IntentParser] ✅ Intent trouvé (exact) : ajouter_cube pour phrase 'ajoute un cube'
+[2025-08-11 17:34:46][IntentParser] ❓ Aucun intent trouvé pour la phrase : 'déplace en z' (score NLP max 0.59)
+[2025-08-11 17:34:47][IntentParser] ❓ Aucun intent trouvé pour la phrase : 'déplace en z' (score NLP max 0.59)
+[2025-08-11 18:19:14][IntentParser] ❓ Aucun intent trouvé pour la phrase : 'déplace en z' (score NLP max 0.59)
+[2025-08-11 18:20:14][IntentParser] ✅ Intent trouvé (exact) : deplacer_vers_z pour phrase 'déplace en z'
+[2025-08-11 23:29:15][IntentParser] 🔄 Intents rechargés (26) depuis C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\config\voice_config.yaml
+[2025-08-11 23:29:15][IntentParser] ✅ Intent trouvé (exact): ajouter_cube pour phrase 'ajoute un cube'
+[2025-08-11 23:29:23][IntentParser] 🤖 Intent trouvé (NLP/Fuzzy 0.89): deplacer_vers_z pour phrase 'déplace le en z'
+[2025-08-11 23:29:26][IntentParser] 🤖 Intent trouvé (NLP/Fuzzy 0.89): deplacer_vers_z pour phrase 'déplace le en z'
+[2025-08-11 23:29:28][IntentParser] 🤖 Intent trouvé (NLP/Fuzzy 0.89): deplacer_vers_z pour phrase 'déplace le en z'
+[2025-08-11 23:29:57][IntentParser] 🤖 Intent trouvé (NLP/Fuzzy 0.89): deplacer_vers_z pour phrase 'déplace le en z'
+[2025-08-11 23:30:11][IntentParser] 🤖 Intent trouvé (NLP/Fuzzy 0.89): deplacer_vers_y pour phrase 'déplace le en y'
+[2025-08-12 15:58:15][IntentParser] 🔄 Intents rechargés (26) depuis C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\config\voice_config.yaml
+[2025-08-12 15:58:15][IntentParser] ❓ Aucun intent trouvé pour la phrase: 'change en rouge' (score max 0.56)
+[2025-08-12 16:10:02][IntentParser] 🔄 Intents rechargés (33) depuis C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\config\voice_config.yaml
+[2025-08-12 16:10:02][IntentParser] ✅ Intent trouvé (exact): changer_couleur_rouge pour phrase 'change en rouge'
+[2025-08-12 16:15:49][IntentParser] 🔄 Intents rechargés (33) depuis C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\config\voice_config.yaml
+[2025-08-12 16:15:49][IntentParser] ✅ Intent trouvé (exact): changer_couleur_rouge pour phrase 'change en rouge'
+[2025-08-12 16:43:11][IntentParser] 🔄 Intents rechargés (33) depuis C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\config\voice_config.yaml
+[2025-08-12 16:43:11][IntentParser] ✅ Intent trouvé (exact): changer_couleur_rouge pour phrase 'change en rouge'
+[2025-08-12 16:44:44][IntentParser] ✅ Intent trouvé (exact): changer_couleur_rouge pour phrase 'change en rouge'
+[2025-08-12 16:45:58][IntentParser] 🔄 Intents rechargés (33) depuis C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\config\voice_config.yaml
+[2025-08-12 16:45:58][IntentParser] ✅ Intent trouvé (exact): changer_couleur_rouge pour phrase 'change en rouge'
+[2025-08-12 16:47:16][IntentParser] ✅ Intent trouvé (exact): changer_couleur_rouge pour phrase 'change en rouge'
+[2025-08-12 16:50:10][IntentParser] 🔄 Intents rechargés (33) depuis C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\config\voice_config.yaml
+[2025-08-12 16:50:10][IntentParser] ✅ Intent trouvé (exact): changer_couleur_rouge pour phrase 'change en rouge'
+[2025-08-12 17:14:10][IntentParser] 🔄 Intents rechargés (33) depuis C:\Users\adrie\AppData\Roaming\Blender Foundation\Blender\4.5\scripts\addons\ares\config\voice_config.yaml
+[2025-08-12 17:14:10][IntentParser] ✅ Intent trouvé (exact): changer_couleur_rouge pour phrase 'change en rouge'

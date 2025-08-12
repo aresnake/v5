@@ -1,0 +1,23 @@
+﻿[
+  {
+    "prompt": "ajoute un cube",
+    "expected_intent": {
+      "name": "ajouter_cube",
+      "operator": "bpy.ops.mesh.primitive_cube_add",
+      "params": {
+        "location": [0, 0, 0]
+      }
+    }
+  },
+  {
+    "prompt": "mets une lumière ici",
+    "expected_intent": {
+      "name": "ajouter_lumiere",
+      "operator": "bpy.ops.object.light_add",
+      "params": {
+        "type": "POINT",
+        "location": [0, 0, 0]
+      }
+    }
+  }
+]

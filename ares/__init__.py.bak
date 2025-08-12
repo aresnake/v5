@@ -1,0 +1,73 @@
+﻿# âœ… Fichier : ares/__init__.py (corrigÃ©)
+
+bl_info = {
+    "name": "Blade v5.1",
+    "author": "Team Blade",
+    "version": (5, 1),
+    "blender": (4, 5, 0),
+    "location": "View3D > Sidebar > Blade",
+    "description": "Assistant vocal et IA adaptative pour Blender",
+    "category": "3D View",
+}
+
+import bpy
+import importlib
+from ares.core.logger import get_logger
+
+log = get_logger("Init")
+
+# Modules Ã  recharger dynamiquement (pour dev)
+modules = [
+    "core.run_pipeline",
+    "core.intent_parser",
+    "tools.intent_resolver",
+    "tools.intent_executor",
+    "tools.validate_suggestions",
+    "tools.utils_yaml",
+    "bots.injector_bot",
+    "bots.passive_agent",
+    "bots.editor_watcher",
+    "voice.voice_engine",
+    "voice.intent_parser",
+    "voice.voice_config_manager",
+    "ui.ui_main",
+    "ui.ui_suggestions",
+    "ui.ui_codex",
+    "ui.ui_routines",
+]
+
+for m in modules:
+    try:
+        importlib.reload(importlib.import_module(f"ares.{m}"))
+    except Exception as e:
+        log.error(f"âŒ Erreur au rechargement de {m} : {e}")
+
+# Enregistreurs UI / Bots / etc.
+def register():
+    from .ui import ui_main, ui_suggestions, ui_codex, ui_routines
+    from ares.bots.editor_watcher import register_handler
+    from ares.agents.agent_passif import activate_passive_agent
+
+    log.info("ðŸ”Œ Initialisation de Blade Voice Assistant")
+    ui_main.register()
+    ui_suggestions.register()
+    ui_codex.register()
+    ui_routines.register()
+
+    register_handler()
+    activate_passive_agent()  # âœ… Passive seulement
+
+
+def unregister():
+    from .ui import ui_main, ui_suggestions, ui_codex, ui_routines
+    from ares.bots.editor_watcher import unregister_handler
+    from ares.agents.agent_passif import deactivate_passive_agent
+
+    ui_main.unregister()
+    ui_suggestions.unregister()
+    ui_codex.unregister()
+    ui_routines.unregister()
+
+    unregister_handler()
+    deactivate_passive_agent()
+

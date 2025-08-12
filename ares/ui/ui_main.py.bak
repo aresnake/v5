@@ -1,0 +1,162 @@
+# -*- coding: utf-8 -*-
+# ares/ui/ui_main.py
+
+from __future__ import annotations
+
+import bpy
+
+# Imports locaux (paresseux pour éviter les boucles d'import)
+def _get_logger():
+    try:
+        from ares.core.logger import get_logger
+        return get_logger("UI_Main")
+    except Exception:
+        # Fallback minimal si logger indisponible pendant le boot
+        class _L:
+            def info(self, *a, **k): pass
+            def warning(self, *a, **k): pass
+            def error(self, *a, **k): pass
+            def exception(self, *a, **k): pass
+        return _L()
+
+log = _get_logger()
+
+def _get_voice_engine():
+    try:
+        from ares.voice.voice_engine import VoiceEngine
+        return VoiceEngine()
+    except Exception as e:
+        log.exception(f"VoiceEngine import/init failed: {e}")
+        return None
+
+# Instance globale (si import échoue, on gère proprement)
+voice_engine = _get_voice_engine()
+
+
+class BLADE_PT_main_panel(bpy.types.Panel):
+    bl_label = "Blade Voice Assistant"
+    bl_idname = "BLADE_PT_main_panel"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'Blade'
+
+    def draw(self, context):
+        layout = self.layout
+
+        row = layout.row()
+        if voice_engine and getattr(voice_engine, "listening", False):
+            row.operator("blade.stop_voice", text="Arrêter l'écoute", icon='PAUSE')
+        else:
+            row.operator("blade.start_voice", text="Démarrer l'écoute", icon='PLAY')
+
+        layout.separator()
+
+        # Bouton de rendu background (appel paresseux au module)
+        row = layout.row()
+        row.operator("blade.render_background", text="Rendu MP4 (background)", icon="RENDER_ANIMATION")
+
+        layout.separator()
+
+        layout.prop(context.scene, "blade_manual_phrase", text="Phrase manuelle")
+        layout.operator("blade.send_manual_phrase", text="Envoyer la phrase")
+
+
+class BLADE_OT_start_voice(bpy.types.Operator):
+    bl_idname = "blade.start_voice"
+    bl_label = "Démarrer l'écoute"
+
+    def execute(self, context):
+        global voice_engine
+        if voice_engine is None:
+            voice_engine = _get_voice_engine()
+        if voice_engine:
+            voice_engine.start_listening()
+            log.info("UI : Voice engine démarré via bouton.")
+            self.report({'INFO'}, "Écoute démarrée.")
+            return {'FINISHED'}
+        self.report({'ERROR'}, "VoiceEngine indisponible.")
+        return {'CANCELLED'}
+
+
+class BLADE_OT_stop_voice(bpy.types.Operator):
+    bl_idname = "blade.stop_voice"
+    bl_label = "Arrêter l'écoute"
+
+    def execute(self, context):
+        if voice_engine:
+            voice_engine.stop_listening()
+            log.info("UI : Voice engine stoppé via bouton.")
+            self.report({'INFO'}, "Écoute arrêtée.")
+            return {'FINISHED'}
+        self.report({'ERROR'}, "VoiceEngine indisponible.")
+        return {'CANCELLED'}
+
+
+class BLADE_OT_send_manual_phrase(bpy.types.Operator):
+    bl_idname = "blade.send_manual_phrase"
+    bl_label = "Envoyer la phrase manuelle"
+
+    def execute(self, context):
+        phrase = context.scene.blade_manual_phrase
+        log.info(f"UI : Phrase manuelle envoyée : {phrase!r}")
+        try:
+            from ares.core.run_pipeline import main as run_pipeline
+            run_pipeline(phrase=phrase, mode="manual")
+        except Exception as e:
+            log.exception(f"run_pipeline échec: {e}")
+            self.report({'ERROR'}, f"Échec pipeline : {e}")
+            return {'CANCELLED'}
+        self.report({'INFO'}, "Phrase envoyée.")
+        return {'FINISHED'}
+
+
+class BLADE_OT_render_background(bpy.types.Operator):
+    bl_idname = "blade.render_background"
+    bl_label = "Rendu MP4 (background)"
+    bl_description = "Lancer un rendu .mp4 en tâche de fond et fermer Blender"
+
+    def execute(self, context):
+        try:
+            # Import paresseux pour éviter des erreurs au chargement si tools/render_bot a des deps
+            from ares.tools import render_bot
+            log.info("UI : Lancement du rendu MP4 en background via UI.")
+            render_bot.launch_background_render()
+            self.report({'INFO'}, "Rendu background lancé.")
+            return {'FINISHED'}
+        except Exception as e:
+            log.exception(f"render_bot échec: {e}")
+            self.report({'ERROR'}, f"Rendu background indisponible : {e}")
+            return {'CANCELLED'}
+
+
+# ---------- Registration ----------
+_CLASSES = (
+    BLADE_PT_main_panel,
+    BLADE_OT_start_voice,
+    BLADE_OT_stop_voice,
+    BLADE_OT_send_manual_phrase,
+    BLADE_OT_render_background,
+)
+
+def register():
+    for cls in _CLASSES:
+        bpy.utils.register_class(cls)
+
+    # Propriété Scene (idempotent)
+    if not hasattr(bpy.types.Scene, "blade_manual_phrase"):
+        bpy.types.Scene.blade_manual_phrase = bpy.props.StringProperty(
+            name="Phrase manuelle",
+            description="Entrez une phrase vocale manuellement",
+            default="",
+        )
+
+def unregister():
+    # Supprimer la propriété si présente
+    if hasattr(bpy.types.Scene, "blade_manual_phrase"):
+        delattr(bpy.types.Scene, "blade_manual_phrase")
+
+    for cls in reversed(_CLASSES):
+        try:
+            bpy.utils.unregister_class(cls)
+        except Exception:
+            pass

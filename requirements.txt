@@ -1,0 +1,30 @@
+# --- Dépendances principales Blade v5 ---
+pyyaml>=6.0
+openai>=1.0.0
+requests
+httpx
+
+# --- Reconnaissance vocale ---
+speechrecognition
+pyaudio
+
+# --- Affichage et graphiques ---
+matplotlib
+
+# --- Tests et qualité de code ---
+pytest
+flake8
+autoflake
+
+# --- NLP (Natural Language Processing) ---
+spacy>=3.5.0
+fr-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.5.0/fr_core_news_sm-3.5.0.tar.gz
+nltk
+
+# --- Manipulation et calcul ---
+numpy
+scipy
+
+# --- Génération 3D & traitement avancé (prévisionnel) ---
+trimesh
+pillow

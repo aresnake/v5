@@ -1,0 +1,67 @@
+﻿# ares/editor_watcher.py
+
+"""
+EditorWatcher â€“ Capteur de changements dans la scÃ¨ne Blender
+Utilise le handler depsgraph pour observer les actions utilisateur.
+"""
+
+import bpy
+from ares.core.logger import get_logger
+from ares.agents.agent_passif import PassiveAgent
+
+log = get_logger("EditorWatcher")
+handler_registered = False
+passive_agent = PassiveAgent()
+
+def depsgraph_handler(scene, depsgraph):
+    """
+    Analyse les updates du depsgraph et logue tous les objets modifiÃ©s, mÃªme sans nom.
+    """
+    for update in depsgraph.updates:
+        id_data = update.id
+        if not id_data:
+            continue
+
+        data_type = type(id_data).__name__
+        try:
+            data_name = getattr(id_data, "name", None) or str(id_data)
+        except:
+            data_name = str(id_data)
+
+        message = f"{data_type} modifiÃ© : {data_name}"
+        passive_agent.record_action(message)
+        log.debug(f"ðŸ‘ï¸ Action dÃ©tectÃ©e : {message}")
+
+    log.info("ðŸ“¡ Analyse depsgraph terminÃ©e.")
+
+def register():
+    global handler_registered
+    if not handler_registered:
+        bpy.app.handlers.depsgraph_update_post.append(depsgraph_handler)
+        handler_registered = True
+        passive_agent.start()
+        log.info("âœ… Handler depsgraph_update enregistrÃ©.")
+
+def unregister():
+    global handler_registered
+    if handler_registered:
+        bpy.app.handlers.depsgraph_update_post.remove(depsgraph_handler)
+        handler_registered = False
+        passive_agent.stop()
+        log.info("âŒ Handler depsgraph_update supprimÃ©.")
+
+
+# ?? Handler d'enregistrement pour Blender
+def register_handler():
+    global handler_registered
+    if not handler_registered:
+        bpy.app.handlers.depsgraph_update_post.append(depsgraph_handler)
+        handler_registered = True
+
+# ?? Optionnel : fonction de nettoyage
+def unregister_handler():
+    global handler_registered
+    if handler_registered:
+        if depsgraph_handler in bpy.app.handlers.depsgraph_update_post:
+            bpy.app.handlers.depsgraph_update_post.remove(depsgraph_handler)
+        handler_registered = False

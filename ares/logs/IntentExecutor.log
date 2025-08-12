@@ -1,0 +1,34 @@
+[2025-08-11 17:34:42][IntentExecutor] ??? Tentative d'exécution : ajouter_cube ? mesh.primitive_cube_add
+[2025-08-11 17:34:42][IntentExecutor] ? Intent exécuté avec succès : ajouter_cube
+[2025-08-11 18:20:14][IntentExecutor] ??? Tentative d'exécution : deplacer_vers_z ? transform.translate
+[2025-08-11 18:20:14][IntentExecutor] ? Intent exécuté avec succès : deplacer_vers_z
+[2025-08-11 23:29:15][IntentExecutor] ▶️  Exécution intent: 'ajouter_cube' | op='mesh.primitive_cube_add' | params={'location': [0, 0, 0]}
+[2025-08-11 23:29:15][IntentExecutor] ✅ Succès intent: 'ajouter_cube' (8.4 ms)
+[2025-08-11 23:29:23][IntentExecutor] ▶️  Exécution intent: 'deplacer_vers_z' | op='transform.translate' | params={'value': [0, 0, 1], 'constraint_axis': [False, False, True]}
+[2025-08-11 23:29:23][IntentExecutor] ✅ Succès intent: 'deplacer_vers_z' (4.7 ms)
+[2025-08-11 23:29:26][IntentExecutor] ▶️  Exécution intent: 'deplacer_vers_z' | op='transform.translate' | params={'value': [0, 0, 1], 'constraint_axis': [False, False, True]}
+[2025-08-11 23:29:26][IntentExecutor] ✅ Succès intent: 'deplacer_vers_z' (1.2 ms)
+[2025-08-11 23:29:28][IntentExecutor] ▶️  Exécution intent: 'deplacer_vers_z' | op='transform.translate' | params={'value': [0, 0, 1], 'constraint_axis': [False, False, True]}
+[2025-08-11 23:29:28][IntentExecutor] ✅ Succès intent: 'deplacer_vers_z' (1.2 ms)
+[2025-08-11 23:29:57][IntentExecutor] ▶️  Exécution intent: 'deplacer_vers_z' | op='transform.translate' | params={'value': [0, 0, 1], 'constraint_axis': [False, False, True]}
+[2025-08-11 23:29:57][IntentExecutor] ✅ Succès intent: 'deplacer_vers_z' (5.3 ms)
+[2025-08-11 23:30:11][IntentExecutor] ▶️  Exécution intent: 'deplacer_vers_y' | op='transform.translate' | params={'value': [0, 1, 0], 'constraint_axis': [False, True, False]}
+[2025-08-11 23:30:11][IntentExecutor] ✅ Succès intent: 'deplacer_vers_y' (1.7 ms)
+[2025-08-12 16:10:02][IntentExecutor] ❌ Échec intent 'changer_couleur_rouge'. resolver+fallback failed | ops='None' | direct='None'
+NoneType: None
+
+[2025-08-12 16:15:50][IntentExecutor] ❌ Échec intent 'changer_couleur_rouge'. resolver+fallback failed | ops='None' | direct='None'
+NoneType: None
+
+[2025-08-12 16:43:11][IntentExecutor] ❌ Échec intent 'changer_couleur_rouge'. resolver+fallback failed | ops='None' | direct='None'
+NoneType: None
+
+[2025-08-12 16:44:44][IntentExecutor] ❌ Échec intent 'changer_couleur_rouge'. resolver+fallback failed | ops='None' | direct='None'
+NoneType: None
+
+[2025-08-12 16:45:58][IntentExecutor] ❌ Échec intent 'changer_couleur_rouge'. resolver+fallback failed | ops='None' | direct='None'
+NoneType: None
+
+[2025-08-12 16:47:16][IntentExecutor] ❌ Échec intent 'changer_couleur_rouge'. resolver+fallback failed | ops='None' | direct='None'
+NoneType: None
+

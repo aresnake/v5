@@ -1,0 +1,8 @@
+# ares/agents/__init__.py
+
+try:
+    from .agent_passif import activate_passive_agent, deactivate_passive_agent
+except ImportError as e:
+    from ares.core.logger import get_logger
+    log = get_logger("agents/__init__")
+    log.warning(f"❌ Erreur import agents : {e}")

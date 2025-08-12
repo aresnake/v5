@@ -1,0 +1,32 @@
+[2025-08-11 17:34:42][IntentResolver] ?? Résolution de l'opérateur : mesh.primitive_cube_add (type: ops)
+[2025-08-11 17:34:42][IntentResolver] ? Opérateur mesh.primitive_cube_add exécuté avec succès ? {'FINISHED'}
+[2025-08-11 18:20:14][IntentResolver] ?? Résolution de l'opérateur : transform.translate (type: ops)
+[2025-08-11 18:20:14][IntentResolver] ? Opérateur transform.translate exécuté avec succès ? {'FINISHED'}
+[2025-08-11 23:29:15][IntentResolver] 🔎 Résolution de 'ajouter_cube' → operator='mesh.primitive_cube_add' (type: ops)
+[2025-08-11 23:29:15][IntentResolver] ✅ bpy.ops.mesh.primitive_cube_add exécuté. Résultat: {'FINISHED'}
+[2025-08-11 23:29:23][IntentResolver] 🔎 Résolution de 'deplacer_vers_z' → operator='transform.translate' (type: ops)
+[2025-08-11 23:29:23][IntentResolver] ✅ bpy.ops.transform.translate exécuté. Résultat: {'FINISHED'}
+[2025-08-11 23:29:26][IntentResolver] 🔎 Résolution de 'deplacer_vers_z' → operator='transform.translate' (type: ops)
+[2025-08-11 23:29:26][IntentResolver] ✅ bpy.ops.transform.translate exécuté. Résultat: {'FINISHED'}
+[2025-08-11 23:29:28][IntentResolver] 🔎 Résolution de 'deplacer_vers_z' → operator='transform.translate' (type: ops)
+[2025-08-11 23:29:28][IntentResolver] ✅ bpy.ops.transform.translate exécuté. Résultat: {'FINISHED'}
+[2025-08-11 23:29:57][IntentResolver] 🔎 Résolution de 'deplacer_vers_z' → operator='transform.translate' (type: ops)
+[2025-08-11 23:29:57][IntentResolver] ✅ bpy.ops.transform.translate exécuté. Résultat: {'FINISHED'}
+[2025-08-11 23:30:11][IntentResolver] 🔎 Résolution de 'deplacer_vers_y' → operator='transform.translate' (type: ops)
+[2025-08-11 23:30:11][IntentResolver] ✅ bpy.ops.transform.translate exécuté. Résultat: {'FINISHED'}
+[2025-08-12 16:10:02][IntentResolver] 🔎 Résolution de 'changer_couleur_rouge' → operator='context.object.active_material.diffuse_color' (type: unknown)
+[2025-08-12 16:10:02][IntentResolver] ⚠️ Type d’opérateur non supporté pour 'changer_couleur_rouge': unknown
+[2025-08-12 16:15:49][IntentResolver] 🔎 Résolution de 'changer_couleur_rouge' → operator='context.object.active_material.diffuse_color' (type: unknown)
+[2025-08-12 16:15:49][IntentResolver] ⚠️ Type d’opérateur non supporté pour 'changer_couleur_rouge': unknown
+[2025-08-12 16:43:11][IntentResolver] 🔎 Résolution de 'changer_couleur_rouge' → operator='context.object.active_material.diffuse_color' (type: ops)
+[2025-08-12 16:43:11][IntentResolver] ❌ Format invalide pour opérateur bpy.ops: 'context.object.active_material.diffuse_color'
+[2025-08-12 16:44:44][IntentResolver] 🔎 Résolution de 'changer_couleur_rouge' → operator='context.object.active_material.diffuse_color' (type: ops)
+[2025-08-12 16:44:44][IntentResolver] ❌ Format invalide pour opérateur bpy.ops: 'context.object.active_material.diffuse_color'
+[2025-08-12 16:45:58][IntentResolver] 🔎 Résolution de 'changer_couleur_rouge' → operator='context.object.active_material.diffuse_color' (type: ops)
+[2025-08-12 16:45:58][IntentResolver] ❌ Format invalide pour opérateur bpy.ops: 'context.object.active_material.diffuse_color'
+[2025-08-12 16:47:16][IntentResolver] 🔎 Résolution de 'changer_couleur_rouge' → operator='context.object.active_material.diffuse_color' (type: ops)
+[2025-08-12 16:47:16][IntentResolver] ❌ Format invalide pour opérateur bpy.ops: 'context.object.active_material.diffuse_color'
+[2025-08-12 16:50:10][IntentResolver] 🔎 Résolution de 'changer_couleur_rouge' → operator='context.object.active_material.diffuse_color' (type: context)
+[2025-08-12 16:50:10][IntentResolver] ✅ Contexte 'context.object.active_material.diffuse_color' affecté avec value=[0.64, 0.0, 0.0, 1.0] (idx=None)
+[2025-08-12 17:14:11][IntentResolver] 🔎 Résolution de 'changer_couleur_rouge' → operator='context.object.active_material.diffuse_color' (type: context)
+[2025-08-12 17:14:11][IntentResolver] 🎨 Base Color nodes = [0.64, 0.0, 0.0, 1.0]

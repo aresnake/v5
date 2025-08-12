@@ -1,0 +1,30 @@
+species:
+  peacock_spider:
+    common_name: "Peacock Spider"
+    scientific_name: "Maratus volans"
+    description: "Petite araignée colorée avec abdomen vibrant et pattes ornées."
+    default_style: "macro_realistic"
+    ref_urls:
+      - "https://upload.wikimedia.org/wikipedia/commons/3/3d/Maratus_volans_male.jpg"
+
+  golden_orb_weaver:
+    common_name: "Golden Orb Weaver"
+    scientific_name: "Nephila clavipes"
+    description: "Grande araignée tisseuse avec toile dorée scintillante."
+    default_style: "macro_realistic"
+    ref_urls:
+      - "https://upload.wikimedia.org/wikipedia/commons/d/d9/Nephila_clavipes.jpg"
+
+  jumping_spider:
+    common_name: "Jumping Spider"
+    scientific_name: "Salticidae"
+    description: "Araignée aux grands yeux frontaux et comportements actifs."
+    default_style: "macro_realistic"
+    ref_urls: []
+
+  tarantula_pinktoe:
+    common_name: "Pinktoe Tarantula"
+    scientific_name: "Avicularia avicularia"
+    description: "Grosse tarentule arboricole aux pointes rosées."
+    default_style: "macro_realistic"
+    ref_urls: []

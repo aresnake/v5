@@ -1,0 +1,106 @@
+[2025-08-11 17:34:42][RunPipeline] ?? Lancement de la pipeline Blade...
+[2025-08-11 17:34:42][RunPipeline] ?? Phrase reçue : ajoute un cube
+[2025-08-11 17:34:42][RunPipeline] ? Intent détecté : ajouter_cube
+[2025-08-11 17:34:42][RunPipeline] ?? Log enrichi avec succès.
+[2025-08-11 17:34:42][RunPipeline] ?? Intent injecté si nouveau dans voice_config.yaml.
+[2025-08-11 17:34:46][RunPipeline] ?? Lancement de la pipeline Blade...
+[2025-08-11 17:34:46][RunPipeline] ?? Phrase reçue : déplace en z
+[2025-08-11 17:34:46][RunPipeline] ? Aucun intent détecté.
+[2025-08-11 17:34:47][RunPipeline] ?? Lancement de la pipeline Blade...
+[2025-08-11 17:34:47][RunPipeline] ?? Phrase reçue : déplace en z
+[2025-08-11 17:34:47][RunPipeline] ? Aucun intent détecté.
+[2025-08-11 18:19:14][RunPipeline] ?? Lancement de la pipeline Blade...
+[2025-08-11 18:19:14][RunPipeline] ?? Phrase reçue : déplace en z
+[2025-08-11 18:19:14][RunPipeline] ? Aucun intent détecté.
+[2025-08-11 18:20:14][RunPipeline] ?? Lancement de la pipeline Blade...
+[2025-08-11 18:20:14][RunPipeline] ?? Phrase reçue : déplace en z
+[2025-08-11 18:20:14][RunPipeline] ? Intent détecté : deplacer_vers_z
+[2025-08-11 18:20:14][RunPipeline] ?? Log enrichi avec succès.
+[2025-08-11 18:20:14][RunPipeline] ?? Intent injecté si nouveau dans voice_config.yaml.
+[2025-08-11 23:29:15][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-11 23:29:15][RunPipeline] 🗣️ Phrase reçue : ajoute un cube
+[2025-08-11 23:29:15][RunPipeline] 🎯 Intent détecté : ajouter_cube | operator=mesh.primitive_cube_add
+[2025-08-11 23:29:15][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-11 23:29:15][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-11 23:29:15][RunPipeline] ✅ Pipeline terminée avec succès. (52.8 ms)
+[2025-08-11 23:29:23][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-11 23:29:23][RunPipeline] 🗣️ Phrase reçue : déplace le en z
+[2025-08-11 23:29:23][RunPipeline] 🎯 Intent détecté : deplacer_vers_z | operator=transform.translate
+[2025-08-11 23:29:23][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-11 23:29:23][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-11 23:29:23][RunPipeline] ✅ Pipeline terminée avec succès. (28.4 ms)
+[2025-08-11 23:29:26][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-11 23:29:26][RunPipeline] 🗣️ Phrase reçue : déplace le en z
+[2025-08-11 23:29:26][RunPipeline] 🎯 Intent détecté : deplacer_vers_z | operator=transform.translate
+[2025-08-11 23:29:26][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-11 23:29:26][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-11 23:29:26][RunPipeline] ✅ Pipeline terminée avec succès. (20.0 ms)
+[2025-08-11 23:29:28][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-11 23:29:28][RunPipeline] 🗣️ Phrase reçue : déplace le en z
+[2025-08-11 23:29:28][RunPipeline] 🎯 Intent détecté : deplacer_vers_z | operator=transform.translate
+[2025-08-11 23:29:28][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-11 23:29:28][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-11 23:29:28][RunPipeline] ✅ Pipeline terminée avec succès. (20.2 ms)
+[2025-08-11 23:29:57][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-11 23:29:57][RunPipeline] 🗣️ Phrase reçue : déplace le en z
+[2025-08-11 23:29:57][RunPipeline] 🎯 Intent détecté : deplacer_vers_z | operator=transform.translate
+[2025-08-11 23:29:57][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-11 23:29:57][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-11 23:29:57][RunPipeline] ✅ Pipeline terminée avec succès. (24.4 ms)
+[2025-08-11 23:30:11][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-11 23:30:11][RunPipeline] 🗣️ Phrase reçue : déplace le en y
+[2025-08-11 23:30:11][RunPipeline] 🎯 Intent détecté : deplacer_vers_y | operator=transform.translate
+[2025-08-11 23:30:11][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-11 23:30:11][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-11 23:30:11][RunPipeline] ✅ Pipeline terminée avec succès. (20.3 ms)
+[2025-08-12 15:58:15][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-12 15:58:15][RunPipeline] 🗣️ Phrase reçue : change en rouge
+[2025-08-12 15:58:15][RunPipeline] ❓ Aucun intent détecté.
+[2025-08-12 16:10:02][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-12 16:10:02][RunPipeline] 🗣️ Phrase reçue : change en rouge
+[2025-08-12 16:10:02][RunPipeline] 🎯 Intent détecté : changer_couleur_rouge | operator=context.object.active_material.diffuse_color
+[2025-08-12 16:10:02][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-12 16:10:02][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-12 16:10:02][RunPipeline] ✅ Pipeline terminée avec succès. (99.4 ms)
+[2025-08-12 16:15:49][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-12 16:15:49][RunPipeline] 🗣️ Phrase reçue : change en rouge
+[2025-08-12 16:15:49][RunPipeline] 🎯 Intent détecté : changer_couleur_rouge | operator=context.object.active_material.diffuse_color
+[2025-08-12 16:15:49][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-12 16:15:49][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-12 16:15:50][RunPipeline] ✅ Pipeline terminée avec succès. (96.4 ms)
+[2025-08-12 16:43:11][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-12 16:43:11][RunPipeline] 🗣️ Phrase reçue : change en rouge
+[2025-08-12 16:43:11][RunPipeline] 🎯 Intent détecté : changer_couleur_rouge | operator=context.object.active_material.diffuse_color
+[2025-08-12 16:43:11][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-12 16:43:11][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-12 16:43:11][RunPipeline] ✅ Pipeline terminée avec succès. (115.2 ms)
+[2025-08-12 16:44:44][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-12 16:44:44][RunPipeline] 🗣️ Phrase reçue : change en rouge
+[2025-08-12 16:44:44][RunPipeline] 🎯 Intent détecté : changer_couleur_rouge | operator=context.object.active_material.diffuse_color
+[2025-08-12 16:44:44][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-12 16:44:44][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-12 16:44:44][RunPipeline] ✅ Pipeline terminée avec succès. (74.9 ms)
+[2025-08-12 16:45:58][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-12 16:45:58][RunPipeline] 🗣️ Phrase reçue : change en rouge
+[2025-08-12 16:45:58][RunPipeline] 🎯 Intent détecté : changer_couleur_rouge | operator=context.object.active_material.diffuse_color
+[2025-08-12 16:45:58][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-12 16:45:58][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-12 16:45:58][RunPipeline] ✅ Pipeline terminée avec succès. (105.3 ms)
+[2025-08-12 16:47:16][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-12 16:47:16][RunPipeline] 🗣️ Phrase reçue : change en rouge
+[2025-08-12 16:47:16][RunPipeline] 🎯 Intent détecté : changer_couleur_rouge | operator=context.object.active_material.diffuse_color
+[2025-08-12 16:47:16][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-12 16:47:16][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-12 16:47:16][RunPipeline] ✅ Pipeline terminée avec succès. (74.6 ms)
+[2025-08-12 16:50:10][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-12 16:50:10][RunPipeline] 🗣️ Phrase reçue : change en rouge
+[2025-08-12 16:50:10][RunPipeline] 🎯 Intent détecté : changer_couleur_rouge | operator=context.object.active_material.diffuse_color
+[2025-08-12 16:50:10][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-12 16:50:10][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-12 16:50:10][RunPipeline] ✅ Pipeline terminée avec succès. (58.4 ms)
+[2025-08-12 17:14:10][RunPipeline] 🚀 Lancement de la pipeline Blade…
+[2025-08-12 17:14:10][RunPipeline] 🗣️ Phrase reçue : change en rouge
+[2025-08-12 17:14:10][RunPipeline] 🎯 Intent détecté : changer_couleur_rouge | operator=context.object.active_material.diffuse_color
+[2025-08-12 17:14:10][RunPipeline] 🧾 Log enrichi avec succès.
+[2025-08-12 17:14:11][RunPipeline] 📥 Intent injecté (pending) si nouveau.
+[2025-08-12 17:14:11][RunPipeline] ✅ Pipeline terminée avec succès. (47.0 ms)

@@ -1,0 +1,18 @@
+import bpy
+
+def classify_operator(op: str):
+    if not op or not isinstance(op, str):
+        return "unknown"
+
+    # 💡 Vérifie si c’est un opérateur bpy.ops
+    parts = op.split(".")
+    if len(parts) == 2:
+        category, command = parts
+        if hasattr(bpy.ops, category) and hasattr(getattr(bpy.ops, category), command):
+            return "ops"
+
+    # 💡 Vérifie si c’est une propriété bpy.context
+    if hasattr(bpy.context, op.split(".")[0]):
+        return "context"
+
+    return "unknown"

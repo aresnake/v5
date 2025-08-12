@@ -1,0 +1,31 @@
+﻿import traceback
+from ares.core.logger import get_logger
+from ares.tools.intent_resolver import resolve_and_execute
+
+log = get_logger("IntentExecutor")
+
+
+def execute_intent(intent: dict) -> bool:
+    """
+    Tente d'exécuter un intent.
+    Retourne True si l'exécution a réussi, False sinon.
+    """
+    name = intent.get("name", "intent_sans_nom")
+    operator = intent.get("operator")
+
+    log.info(f"🛠️ Tentative d'exécution : {name} → {operator}")
+
+    try:
+        success = resolve_and_execute(intent)
+
+        if success:
+            log.info(f"✅ Intent exécuté avec succès : {name}")
+            return True
+        else:
+            log.warning(f"⚠️ Échec d'exécution de l'intent : {name}")
+            return False
+
+    except Exception as e:
+        log.error(f"🔥 Exception lors de l'exécution de l'intent : {name}")
+        traceback.print_exc()
+        return False

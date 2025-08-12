@@ -1,0 +1,24 @@
+styles:
+  macro_realistic:
+    description: "Photographie macro hyper-réaliste avec textures PBR."
+    camera_fov: 35
+    lighting: "HDRI soft daylight"
+    texture_resolution: "4K"
+
+  lowpoly_cartoon:
+    description: "Style low-poly, couleurs vives, contours nets."
+    camera_fov: 40
+    lighting: "Flat stylized"
+    texture_resolution: "512px"
+
+  fantasy_bioluminescent:
+    description: "Couleurs vives et motifs lumineux, style fantasy."
+    camera_fov: 30
+    lighting: "Night HDRI with glowing details"
+    texture_resolution: "2K"
+
+  sci_fi_mechanical:
+    description: "Araignée robotique chromée avec articulations mécaniques."
+    camera_fov: 35
+    lighting: "Studio HDRI"
+    texture_resolution: "2K"
