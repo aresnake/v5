@@ -13,3 +13,11 @@
 *.yaml text eol=lf
 
 *.ini text eol=lf
+# --- binary assets (pas de conversion EOL ni diff) ---
+*.glb  binary
+*.gltf binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.wav  binary
+*.zip  binary
