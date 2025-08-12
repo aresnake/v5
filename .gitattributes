@@ -3,3 +3,5 @@
 *.yml text eol=lf
 
 *.toml text eol=lf
+
+.gitattributes text eol=lf
