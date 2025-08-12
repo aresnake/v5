@@ -5,8 +5,8 @@ Provides functions to generate 3D spiders of various species and styles.
 """
 
 from .spider_generator import (
+    generate_random_spider,
+    generate_spider,
     list_species,
     list_styles,
-    generate_spider,
-    generate_random_spider,
 )

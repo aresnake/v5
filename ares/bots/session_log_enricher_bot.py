@@ -1,5 +1,6 @@
 ﻿from ares.tools.operator_classifier import classify_operator
 
+
 def enrich_log(intent: dict, mode="voice"):
     if not intent:
         return

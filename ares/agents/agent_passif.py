@@ -43,8 +43,10 @@ class PassiveAgent:
 # ?? Points d’entrée pour register/unregister
 _passive_agent = PassiveAgent()
 
+
 def activate_passive_agent():
     _passive_agent.start()
+
 
 def deactivate_passive_agent():
     _passive_agent.stop()

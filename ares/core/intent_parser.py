@@ -7,13 +7,12 @@ Avec fallback NLP si aucun match exact trouvé.
 
 from __future__ import annotations
 
-import os
-import io
-import time
-import yaml
 import difflib
+import os
 import unicodedata
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
+
+import yaml
 
 from ares.core.logger import get_logger
 
@@ -24,13 +23,14 @@ CONFIG_PATH = os.path.normpath(CONFIG_PATH)
 log = get_logger("IntentParser")
 
 # Cache en mémoire + mtime pour reload auto
-_intent_cache: Optional[List[Dict[str, Any]]] = None
-_intent_cache_mtime: Optional[float] = None
+_intent_cache: list[dict[str, Any]] | None = None
+_intent_cache_mtime: float | None = None
 
 
 # ---------------------------
 # Utils de normalisation texte
 # ---------------------------
+
 
 def _strip_accents(s: str) -> str:
     # Sans dépendance externe: unicodedata
@@ -52,8 +52,9 @@ def _norm_txt(s: str) -> str:
 # Lecture YAML + cache
 # ---------------------------
 
-def _read_yaml(path: str) -> List[Dict[str, Any]]:
-    with io.open(path, "r", encoding="utf-8") as f:
+
+def _read_yaml(path: str) -> list[dict[str, Any]]:
+    with open(path, encoding="utf-8") as f:
         data = yaml.safe_load(f)
     if not isinstance(data, list):
         log.warning("⚠️ Le fichier voice_config.yaml ne contient pas une liste d'intents.")
@@ -61,7 +62,7 @@ def _read_yaml(path: str) -> List[Dict[str, Any]]:
     return [d for d in data if isinstance(d, dict)]
 
 
-def load_intents(force_reload: bool = False) -> List[Dict[str, Any]]:
+def load_intents(force_reload: bool = False) -> list[dict[str, Any]]:
     """
     Charge ou retourne en cache les intents YAML.
     Reload automatique si le fichier a changé sur disque.
@@ -103,14 +104,15 @@ def invalidate_cache() -> None:
 # Matching helpers
 # ---------------------------
 
-def _iter_all_phrases(intent: Dict[str, Any]) -> List[str]:
+
+def _iter_all_phrases(intent: dict[str, Any]) -> list[str]:
     """
     Retourne toutes les variantes textuelles d'un intent:
     - 'phrase' (str) – rétro-compat
     - 'phrases' (List[str])
     - 'aliases' (List[str]) – champ optionnel
     """
-    out: List[str] = []
+    out: list[str] = []
     p = intent.get("phrase")
     if isinstance(p, str) and p.strip():
         out.append(p)
@@ -133,7 +135,7 @@ def _iter_all_phrases(intent: Dict[str, Any]) -> List[str]:
     return uniq
 
 
-def _standardize_intent(raw: Dict[str, Any]) -> Dict[str, Any]:
+def _standardize_intent(raw: dict[str, Any]) -> dict[str, Any]:
     """
     Renvoie un dict prêt pour l'exécution par intent_executor:
     { 'name', 'operator', 'params', ...meta }
@@ -145,7 +147,7 @@ def _standardize_intent(raw: Dict[str, Any]) -> Dict[str, Any]:
     return result
 
 
-def _exact_match(phrase_norm: str, intents: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+def _exact_match(phrase_norm: str, intents: list[dict[str, Any]]) -> dict[str, Any] | None:
     for it in intents:
         for variant in _iter_all_phrases(it):
             if _norm_txt(variant) == phrase_norm:
@@ -153,12 +155,14 @@ def _exact_match(phrase_norm: str, intents: List[Dict[str, Any]]) -> Optional[Di
     return None
 
 
-def _fuzzy_match_fallback(phrase: str, intents: List[Dict[str, Any]]) -> Tuple[Optional[Dict[str, Any]], float]:
+def _fuzzy_match_fallback(
+    phrase: str, intents: list[dict[str, Any]]
+) -> tuple[dict[str, Any] | None, float]:
     """
     Fallback fuzzy local (difflib) si module NLP indisponible.
     Retourne (intent, score[0..1])
     """
-    candidates: List[Tuple[str, Dict[str, Any]]] = []
+    candidates: list[tuple[str, dict[str, Any]]] = []
     for it in intents:
         for variant in _iter_all_phrases(it):
             candidates.append((_norm_txt(variant), it))
@@ -180,7 +184,7 @@ def _fuzzy_match_fallback(phrase: str, intents: List[Dict[str, Any]]) -> Tuple[O
     return None, 0.0
 
 
-def _nlp_match(phrase: str, intents: List[Dict[str, Any]]) -> Tuple[Optional[Dict[str, Any]], float]:
+def _nlp_match(phrase: str, intents: list[dict[str, Any]]) -> tuple[dict[str, Any] | None, float]:
     """
     Utilise ares.tools.nlp_intent_matcher si disponible.
     Doit exposer: match_intent(phrase: str, intents: List[dict]) -> Tuple[dict|None, float]
@@ -204,7 +208,8 @@ def _nlp_match(phrase: str, intents: List[Dict[str, Any]]) -> Tuple[Optional[Dic
 # Public API
 # ---------------------------
 
-def parse_intent(phrase: str) -> Optional[Dict[str, Any]]:
+
+def parse_intent(phrase: str) -> dict[str, Any] | None:
     """
     Reçoit une phrase, retourne l'intent correspondant si trouvé.
     Priorités:
@@ -227,7 +232,9 @@ def parse_intent(phrase: str) -> Optional[Dict[str, Any]]:
     # 2️⃣ Matching NLP / fuzzy
     best_intent, score = _nlp_match(phrase, intents)
     if best_intent:
-        log.info(f"🤖 Intent trouvé (NLP/Fuzzy {score:.2f}): {best_intent.get('name')} pour phrase '{phrase}'")
+        log.info(
+            f"🤖 Intent trouvé (NLP/Fuzzy {score:.2f}): {best_intent.get('name')} pour phrase '{phrase}'"
+        )
         return best_intent
 
     log.warning(f"❓ Aucun intent trouvé pour la phrase: '{phrase}' (score max {score:.2f})")
@@ -237,6 +244,7 @@ def parse_intent(phrase: str) -> Optional[Dict[str, Any]]:
 # ---------------------------
 # Dev helpers
 # ---------------------------
+
 
 def debug_preview(limit: int = 10) -> None:
     """Affiche un aperçu des intents chargés (pour debug)."""

@@ -8,25 +8,13 @@ import os
 import sys
 import traceback
 import warnings
+from collections.abc import Awaitable, Callable, Coroutine, Generator, Iterable, Mapping
 from contextlib import suppress
 from types import SimpleNamespace, TracebackType
 from typing import (
     Any,
-    Awaitable,
-    Callable,
-    Coroutine,
-    FrozenSet,
-    Generator,
     Generic,
-    Iterable,
-    List,
-    Mapping,
-    Optional,
-    Set,
-    Tuple,
-    Type,
     TypeVar,
-    Union,
 )
 
 import attr
@@ -37,37 +25,87 @@ from . import hdrs, http, payload
 from .abc import AbstractCookieJar
 from .client_exceptions import (
     ClientConnectionError as ClientConnectionError,
+)
+from .client_exceptions import (
     ClientConnectorCertificateError as ClientConnectorCertificateError,
+)
+from .client_exceptions import (
     ClientConnectorError as ClientConnectorError,
+)
+from .client_exceptions import (
     ClientConnectorSSLError as ClientConnectorSSLError,
+)
+from .client_exceptions import (
     ClientError as ClientError,
+)
+from .client_exceptions import (
     ClientHttpProxyError as ClientHttpProxyError,
+)
+from .client_exceptions import (
     ClientOSError as ClientOSError,
+)
+from .client_exceptions import (
     ClientPayloadError as ClientPayloadError,
+)
+from .client_exceptions import (
     ClientProxyConnectionError as ClientProxyConnectionError,
+)
+from .client_exceptions import (
     ClientResponseError as ClientResponseError,
+)
+from .client_exceptions import (
     ClientSSLError as ClientSSLError,
+)
+from .client_exceptions import (
     ContentTypeError as ContentTypeError,
+)
+from .client_exceptions import (
     InvalidURL as InvalidURL,
+)
+from .client_exceptions import (
     ServerConnectionError as ServerConnectionError,
+)
+from .client_exceptions import (
     ServerDisconnectedError as ServerDisconnectedError,
+)
+from .client_exceptions import (
     ServerFingerprintMismatch as ServerFingerprintMismatch,
+)
+from .client_exceptions import (
     ServerTimeoutError as ServerTimeoutError,
+)
+from .client_exceptions import (
     TooManyRedirects as TooManyRedirects,
+)
+from .client_exceptions import (
     WSServerHandshakeError as WSServerHandshakeError,
 )
 from .client_reqrep import (
     ClientRequest as ClientRequest,
+)
+from .client_reqrep import (
     ClientResponse as ClientResponse,
+)
+from .client_reqrep import (
     Fingerprint as Fingerprint,
+)
+from .client_reqrep import (
     RequestInfo as RequestInfo,
+)
+from .client_reqrep import (
     _merge_ssl_params,
 )
 from .client_ws import ClientWebSocketResponse as ClientWebSocketResponse
 from .connector import (
     BaseConnector as BaseConnector,
+)
+from .connector import (
     NamedPipeConnector as NamedPipeConnector,
+)
+from .connector import (
     TCPConnector as TCPConnector,
+)
+from .connector import (
     UnixConnector as UnixConnector,
 )
 from .cookiejar import CookieJar
@@ -136,10 +174,10 @@ except ImportError:  # pragma: no cover
 
 @attr.s(auto_attribs=True, frozen=True, slots=True)
 class ClientTimeout:
-    total: Optional[float] = None
-    connect: Optional[float] = None
-    sock_read: Optional[float] = None
-    sock_connect: Optional[float] = None
+    total: float | None = None
+    connect: float | None = None
+    sock_read: float | None = None
+    sock_connect: float | None = None
 
     # pool_queue_timeout: Optional[float] = None
     # dns_resolution_timeout: Optional[float] = None
@@ -196,29 +234,29 @@ class ClientSession:
 
     def __init__(
         self,
-        base_url: Optional[StrOrURL] = None,
+        base_url: StrOrURL | None = None,
         *,
-        connector: Optional[BaseConnector] = None,
-        loop: Optional[asyncio.AbstractEventLoop] = None,
-        cookies: Optional[LooseCookies] = None,
-        headers: Optional[LooseHeaders] = None,
-        skip_auto_headers: Optional[Iterable[str]] = None,
-        auth: Optional[BasicAuth] = None,
+        connector: BaseConnector | None = None,
+        loop: asyncio.AbstractEventLoop | None = None,
+        cookies: LooseCookies | None = None,
+        headers: LooseHeaders | None = None,
+        skip_auto_headers: Iterable[str] | None = None,
+        auth: BasicAuth | None = None,
         json_serialize: JSONEncoder = json.dumps,
-        request_class: Type[ClientRequest] = ClientRequest,
-        response_class: Type[ClientResponse] = ClientResponse,
-        ws_response_class: Type[ClientWebSocketResponse] = ClientWebSocketResponse,
+        request_class: type[ClientRequest] = ClientRequest,
+        response_class: type[ClientResponse] = ClientResponse,
+        ws_response_class: type[ClientWebSocketResponse] = ClientWebSocketResponse,
         version: HttpVersion = http.HttpVersion11,
-        cookie_jar: Optional[AbstractCookieJar] = None,
+        cookie_jar: AbstractCookieJar | None = None,
         connector_owner: bool = True,
         raise_for_status: bool = False,
-        read_timeout: Union[float, object] = sentinel,
-        conn_timeout: Optional[float] = None,
-        timeout: Union[object, ClientTimeout] = sentinel,
+        read_timeout: float | object = sentinel,
+        conn_timeout: float | None = None,
+        timeout: object | ClientTimeout = sentinel,
         auto_decompress: bool = True,
         trust_env: bool = False,
         requote_redirect_url: bool = True,
-        trace_configs: Optional[List[TraceConfig]] = None,
+        trace_configs: list[TraceConfig] | None = None,
         read_bufsize: int = 2**16,
     ) -> None:
         if loop is None:
@@ -228,7 +266,7 @@ class ClientSession:
         loop = get_running_loop(loop)
 
         if base_url is None or isinstance(base_url, URL):
-            self._base_url: Optional[URL] = base_url
+            self._base_url: URL | None = base_url
         else:
             self._base_url = URL(base_url)
             assert (
@@ -278,9 +316,7 @@ class ClientSession:
             self._timeout = timeout  # type: ignore[assignment]
             if read_timeout is not sentinel:
                 raise ValueError(
-                    "read_timeout and timeout parameters "
-                    "conflict, please setup "
-                    "timeout.read"
+                    "read_timeout and timeout parameters " "conflict, please setup " "timeout.read"
                 )
             if conn_timeout is not None:
                 raise ValueError(
@@ -313,10 +349,9 @@ class ClientSession:
         for trace_config in self._trace_configs:
             trace_config.freeze()
 
-    def __init_subclass__(cls: Type["ClientSession"]) -> None:
+    def __init_subclass__(cls: type["ClientSession"]) -> None:
         warnings.warn(
-            "Inheritance class {} from ClientSession "
-            "is discouraged".format(cls.__name__),
+            f"Inheritance class {cls.__name__} from ClientSession " "is discouraged",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -326,8 +361,7 @@ class ClientSession:
         def __setattr__(self, name: str, val: Any) -> None:
             if name not in self.ATTRS:
                 warnings.warn(
-                    "Setting custom ClientSession.{} attribute "
-                    "is discouraged".format(name),
+                    f"Setting custom ClientSession.{name} attribute " "is discouraged",
                     DeprecationWarning,
                     stacklevel=2,
                 )
@@ -339,17 +373,13 @@ class ClientSession:
                 kwargs = {"source": self}
             else:
                 kwargs = {}
-            _warnings.warn(
-                f"Unclosed client session {self!r}", ResourceWarning, **kwargs
-            )
+            _warnings.warn(f"Unclosed client session {self!r}", ResourceWarning, **kwargs)
             context = {"client_session": self, "message": "Unclosed client session"}
             if self._source_traceback is not None:
                 context["source_traceback"] = self._source_traceback
             self._loop.call_exception_handler(context)
 
-    def request(
-        self, method: str, url: StrOrURL, **kwargs: Any
-    ) -> "_RequestContextManager":
+    def request(self, method: str, url: StrOrURL, **kwargs: Any) -> "_RequestContextManager":
         """Perform HTTP request."""
         return _RequestContextManager(self._request(method, url, **kwargs))
 
@@ -366,30 +396,30 @@ class ClientSession:
         method: str,
         str_or_url: StrOrURL,
         *,
-        params: Optional[Mapping[str, str]] = None,
+        params: Mapping[str, str] | None = None,
         data: Any = None,
         json: Any = None,
-        cookies: Optional[LooseCookies] = None,
-        headers: Optional[LooseHeaders] = None,
-        skip_auto_headers: Optional[Iterable[str]] = None,
-        auth: Optional[BasicAuth] = None,
+        cookies: LooseCookies | None = None,
+        headers: LooseHeaders | None = None,
+        skip_auto_headers: Iterable[str] | None = None,
+        auth: BasicAuth | None = None,
         allow_redirects: bool = True,
         max_redirects: int = 10,
-        compress: Optional[str] = None,
-        chunked: Optional[bool] = None,
+        compress: str | None = None,
+        chunked: bool | None = None,
         expect100: bool = False,
-        raise_for_status: Optional[bool] = None,
+        raise_for_status: bool | None = None,
         read_until_eof: bool = True,
-        proxy: Optional[StrOrURL] = None,
-        proxy_auth: Optional[BasicAuth] = None,
-        timeout: Union[ClientTimeout, object] = sentinel,
-        verify_ssl: Optional[bool] = None,
-        fingerprint: Optional[bytes] = None,
-        ssl_context: Optional[SSLContext] = None,
-        ssl: Optional[Union[SSLContext, bool, Fingerprint]] = None,
-        proxy_headers: Optional[LooseHeaders] = None,
-        trace_request_ctx: Optional[SimpleNamespace] = None,
-        read_bufsize: Optional[int] = None,
+        proxy: StrOrURL | None = None,
+        proxy_auth: BasicAuth | None = None,
+        timeout: ClientTimeout | object = sentinel,
+        verify_ssl: bool | None = None,
+        fingerprint: bytes | None = None,
+        ssl_context: SSLContext | None = None,
+        ssl: SSLContext | bool | Fingerprint | None = None,
+        proxy_headers: LooseHeaders | None = None,
+        trace_request_ctx: SimpleNamespace | None = None,
+        read_bufsize: int | None = None,
     ) -> ClientResponse:
 
         # NOTE: timeout clamps existing connect and read timeouts.  We cannot
@@ -402,9 +432,7 @@ class ClientSession:
         ssl = _merge_ssl_params(ssl, verify_ssl, ssl_context, fingerprint)
 
         if data is not None and json is not None:
-            raise ValueError(
-                "data and json parameters can not be used at the same time"
-            )
+            raise ValueError("data and json parameters can not be used at the same time")
         elif json is not None:
             data = payload.JsonPayload(json, dumps=self._json_serialize)
 
@@ -469,8 +497,7 @@ class ClientSession:
                     url, auth_from_url = strip_auth_from_url(url)
                     if auth and auth_from_url:
                         raise ValueError(
-                            "Cannot combine AUTH argument with "
-                            "credentials encoded in URL"
+                            "Cannot combine AUTH argument with " "credentials encoded in URL"
                         )
 
                     if auth is None:
@@ -479,11 +506,7 @@ class ClientSession:
                         auth = self._default_auth
                     # It would be confusing if we support explicit
                     # Authorization header with auth argument
-                    if (
-                        headers is not None
-                        and auth is not None
-                        and hdrs.AUTHORIZATION in headers
-                    ):
+                    if headers is not None and auth is not None and hdrs.AUTHORIZATION in headers:
                         raise ValueError(
                             "Cannot combine AUTHORIZATION header "
                             "with AUTH argument or credentials "
@@ -536,10 +559,8 @@ class ClientSession:
                             conn = await self._connector.connect(
                                 req, traces=traces, timeout=real_timeout
                             )
-                    except asyncio.TimeoutError as exc:
-                        raise ServerTimeoutError(
-                            "Connection timeout " "to host {}".format(url)
-                        ) from exc
+                    except TimeoutError as exc:
+                        raise ServerTimeoutError("Connection timeout " f"to host {url}") from exc
 
                     assert conn.transport is not None
 
@@ -585,9 +606,7 @@ class ClientSession:
                         history.append(resp)
                         if max_redirects and redirects >= max_redirects:
                             resp.close()
-                            raise TooManyRedirects(
-                                history[0].request_info, tuple(history)
-                            )
+                            raise TooManyRedirects(history[0].request_info, tuple(history))
 
                         # For 301 and 302, mimic IE, now changed in RFC
                         # https://github.com/kennethreitz/requests/pull/269
@@ -599,9 +618,7 @@ class ClientSession:
                             if headers.get(hdrs.CONTENT_LENGTH):
                                 headers.pop(hdrs.CONTENT_LENGTH)
 
-                        r_url = resp.headers.get(hdrs.LOCATION) or resp.headers.get(
-                            hdrs.URI
-                        )
+                        r_url = resp.headers.get(hdrs.LOCATION) or resp.headers.get(hdrs.URI)
                         if r_url is None:
                             # see github.com/aio-libs/aiohttp/issues/2022
                             break
@@ -611,9 +628,7 @@ class ClientSession:
                             resp.release()
 
                         try:
-                            parsed_url = URL(
-                                r_url, encoded=not self._requote_redirect_url
-                            )
+                            parsed_url = URL(r_url, encoded=not self._requote_redirect_url)
 
                         except ValueError as e:
                             raise InvalidURL(r_url) from e
@@ -652,9 +667,7 @@ class ClientSession:
             resp._history = tuple(history)
 
             for trace in traces:
-                await trace.send_request_end(
-                    method, url.update_query(params), headers, resp
-                )
+                await trace.send_request_end(method, url.update_query(params), headers, resp)
             return resp
 
         except BaseException as e:
@@ -665,9 +678,7 @@ class ClientSession:
                 handle = None
 
             for trace in traces:
-                await trace.send_request_exception(
-                    method, url.update_query(params), headers, e
-                )
+                await trace.send_request_exception(method, url.update_query(params), headers, e)
             raise
 
     def ws_connect(
@@ -677,21 +688,21 @@ class ClientSession:
         method: str = hdrs.METH_GET,
         protocols: Iterable[str] = (),
         timeout: float = 10.0,
-        receive_timeout: Optional[float] = None,
+        receive_timeout: float | None = None,
         autoclose: bool = True,
         autoping: bool = True,
-        heartbeat: Optional[float] = None,
-        auth: Optional[BasicAuth] = None,
-        origin: Optional[str] = None,
-        params: Optional[Mapping[str, str]] = None,
-        headers: Optional[LooseHeaders] = None,
-        proxy: Optional[StrOrURL] = None,
-        proxy_auth: Optional[BasicAuth] = None,
-        ssl: Union[SSLContext, bool, None, Fingerprint] = None,
-        verify_ssl: Optional[bool] = None,
-        fingerprint: Optional[bytes] = None,
-        ssl_context: Optional[SSLContext] = None,
-        proxy_headers: Optional[LooseHeaders] = None,
+        heartbeat: float | None = None,
+        auth: BasicAuth | None = None,
+        origin: str | None = None,
+        params: Mapping[str, str] | None = None,
+        headers: LooseHeaders | None = None,
+        proxy: StrOrURL | None = None,
+        proxy_auth: BasicAuth | None = None,
+        ssl: SSLContext | bool | None | Fingerprint = None,
+        verify_ssl: bool | None = None,
+        fingerprint: bytes | None = None,
+        ssl_context: SSLContext | None = None,
+        proxy_headers: LooseHeaders | None = None,
         compress: int = 0,
         max_msg_size: int = 4 * 1024 * 1024,
     ) -> "_WSRequestContextManager":
@@ -729,21 +740,21 @@ class ClientSession:
         method: str = hdrs.METH_GET,
         protocols: Iterable[str] = (),
         timeout: float = 10.0,
-        receive_timeout: Optional[float] = None,
+        receive_timeout: float | None = None,
         autoclose: bool = True,
         autoping: bool = True,
-        heartbeat: Optional[float] = None,
-        auth: Optional[BasicAuth] = None,
-        origin: Optional[str] = None,
-        params: Optional[Mapping[str, str]] = None,
-        headers: Optional[LooseHeaders] = None,
-        proxy: Optional[StrOrURL] = None,
-        proxy_auth: Optional[BasicAuth] = None,
-        ssl: Union[SSLContext, bool, None, Fingerprint] = None,
-        verify_ssl: Optional[bool] = None,
-        fingerprint: Optional[bytes] = None,
-        ssl_context: Optional[SSLContext] = None,
-        proxy_headers: Optional[LooseHeaders] = None,
+        heartbeat: float | None = None,
+        auth: BasicAuth | None = None,
+        origin: str | None = None,
+        params: Mapping[str, str] | None = None,
+        headers: LooseHeaders | None = None,
+        proxy: StrOrURL | None = None,
+        proxy_auth: BasicAuth | None = None,
+        ssl: SSLContext | bool | None | Fingerprint = None,
+        verify_ssl: bool | None = None,
+        fingerprint: bytes | None = None,
+        ssl_context: SSLContext | None = None,
+        proxy_headers: LooseHeaders | None = None,
         compress: int = 0,
         max_msg_size: int = 4 * 1024 * 1024,
     ) -> ClientWebSocketResponse:
@@ -834,8 +845,7 @@ class ClientSession:
             protocol = None
             if protocols and hdrs.SEC_WEBSOCKET_PROTOCOL in resp.headers:
                 resp_protocols = [
-                    proto.strip()
-                    for proto in resp.headers[hdrs.SEC_WEBSOCKET_PROTOCOL].split(",")
+                    proto.strip() for proto in resp.headers[hdrs.SEC_WEBSOCKET_PROTOCOL].split(",")
                 ]
 
                 for proto in resp_protocols:
@@ -898,14 +908,14 @@ class ClientSession:
                 client_notakeover=notakeover,
             )
 
-    def _prepare_headers(self, headers: Optional[LooseHeaders]) -> "CIMultiDict[str]":
+    def _prepare_headers(self, headers: LooseHeaders | None) -> "CIMultiDict[str]":
         """Add default headers and transform it to CIMultiDict"""
         # Convert headers to MultiDict
         result = CIMultiDict(self._default_headers)
         if headers:
             if not isinstance(headers, (MultiDictProxy, MultiDict)):
                 headers = CIMultiDict(headers)
-            added_names: Set[str] = set()
+            added_names: set[str] = set()
             for key, value in headers.items():
                 if key in added_names:
                     result.add(key, value)
@@ -927,9 +937,7 @@ class ClientSession:
     ) -> "_RequestContextManager":
         """Perform HTTP OPTIONS request."""
         return _RequestContextManager(
-            self._request(
-                hdrs.METH_OPTIONS, url, allow_redirects=allow_redirects, **kwargs
-            )
+            self._request(hdrs.METH_OPTIONS, url, allow_redirects=allow_redirects, **kwargs)
         )
 
     def head(
@@ -937,34 +945,20 @@ class ClientSession:
     ) -> "_RequestContextManager":
         """Perform HTTP HEAD request."""
         return _RequestContextManager(
-            self._request(
-                hdrs.METH_HEAD, url, allow_redirects=allow_redirects, **kwargs
-            )
+            self._request(hdrs.METH_HEAD, url, allow_redirects=allow_redirects, **kwargs)
         )
 
-    def post(
-        self, url: StrOrURL, *, data: Any = None, **kwargs: Any
-    ) -> "_RequestContextManager":
+    def post(self, url: StrOrURL, *, data: Any = None, **kwargs: Any) -> "_RequestContextManager":
         """Perform HTTP POST request."""
-        return _RequestContextManager(
-            self._request(hdrs.METH_POST, url, data=data, **kwargs)
-        )
+        return _RequestContextManager(self._request(hdrs.METH_POST, url, data=data, **kwargs))
 
-    def put(
-        self, url: StrOrURL, *, data: Any = None, **kwargs: Any
-    ) -> "_RequestContextManager":
+    def put(self, url: StrOrURL, *, data: Any = None, **kwargs: Any) -> "_RequestContextManager":
         """Perform HTTP PUT request."""
-        return _RequestContextManager(
-            self._request(hdrs.METH_PUT, url, data=data, **kwargs)
-        )
+        return _RequestContextManager(self._request(hdrs.METH_PUT, url, data=data, **kwargs))
 
-    def patch(
-        self, url: StrOrURL, *, data: Any = None, **kwargs: Any
-    ) -> "_RequestContextManager":
+    def patch(self, url: StrOrURL, *, data: Any = None, **kwargs: Any) -> "_RequestContextManager":
         """Perform HTTP PATCH request."""
-        return _RequestContextManager(
-            self._request(hdrs.METH_PATCH, url, data=data, **kwargs)
-        )
+        return _RequestContextManager(self._request(hdrs.METH_PATCH, url, data=data, **kwargs))
 
     def delete(self, url: StrOrURL, **kwargs: Any) -> "_RequestContextManager":
         """Perform HTTP DELETE request."""
@@ -989,7 +983,7 @@ class ClientSession:
         return self._connector is None or self._connector.closed
 
     @property
-    def connector(self) -> Optional[BaseConnector]:
+    def connector(self) -> BaseConnector | None:
         """Connector instance used for the session."""
         return self._connector
 
@@ -999,7 +993,7 @@ class ClientSession:
         return self._cookie_jar
 
     @property
-    def version(self) -> Tuple[int, int]:
+    def version(self) -> tuple[int, int]:
         """The session HTTP protocol version."""
         return self._version
 
@@ -1021,9 +1015,7 @@ class ClientSession:
     @property
     def loop(self) -> asyncio.AbstractEventLoop:
         """Session's loop."""
-        warnings.warn(
-            "client.loop property is deprecated", DeprecationWarning, stacklevel=2
-        )
+        warnings.warn("client.loop property is deprecated", DeprecationWarning, stacklevel=2)
         return self._loop
 
     @property
@@ -1037,12 +1029,12 @@ class ClientSession:
         return self._default_headers
 
     @property
-    def skip_auto_headers(self) -> FrozenSet[istr]:
+    def skip_auto_headers(self) -> frozenset[istr]:
         """Headers for which autogeneration should be skipped"""
         return self._skip_auto_headers
 
     @property
-    def auth(self) -> Optional[BasicAuth]:
+    def auth(self) -> BasicAuth | None:
         """An object that represents HTTP Basic Authorization"""
         return self._default_auth
 
@@ -1059,7 +1051,7 @@ class ClientSession:
     @property
     def raise_for_status(
         self,
-    ) -> Union[bool, Callable[[ClientResponse], Awaitable[None]]]:
+    ) -> bool | Callable[[ClientResponse], Awaitable[None]]:
         """Should `ClientResponse.raise_for_status()` be called for each response."""
         return self._raise_for_status
 
@@ -1079,7 +1071,7 @@ class ClientSession:
         return self._trust_env
 
     @property
-    def trace_configs(self) -> List[TraceConfig]:
+    def trace_configs(self) -> list[TraceConfig]:
         """A list of TraceConfig instances used for client tracing"""
         return self._trace_configs
 
@@ -1095,9 +1087,9 @@ class ClientSession:
 
     def __exit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
     ) -> None:
         # __exit__ should exist in pair with __enter__ but never executed
         pass  # pragma: no cover
@@ -1107,9 +1099,9 @@ class ClientSession:
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
     ) -> None:
         await self.close()
 
@@ -1147,9 +1139,9 @@ class _RequestContextManager(_BaseRequestContextManager[ClientResponse]):
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc: Optional[BaseException],
-        tb: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        tb: TracebackType | None,
     ) -> None:
         # We're basing behavior on the exception as it can be caused by
         # user code unrelated to the status of the connection.  If you
@@ -1164,9 +1156,9 @@ class _WSRequestContextManager(_BaseRequestContextManager[ClientWebSocketRespons
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc: Optional[BaseException],
-        tb: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        tb: TracebackType | None,
     ) -> None:
         await self._resp.close()
 
@@ -1181,7 +1173,7 @@ class _SessionRequestContextManager:
         session: ClientSession,
     ) -> None:
         self._coro = coro
-        self._resp: Optional[ClientResponse] = None
+        self._resp: ClientResponse | None = None
         self._session = session
 
     async def __aenter__(self) -> ClientResponse:
@@ -1195,9 +1187,9 @@ class _SessionRequestContextManager:
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc: Optional[BaseException],
-        tb: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        tb: TracebackType | None,
     ) -> None:
         assert self._resp is not None
         self._resp.close()
@@ -1208,27 +1200,27 @@ def request(
     method: str,
     url: StrOrURL,
     *,
-    params: Optional[Mapping[str, str]] = None,
+    params: Mapping[str, str] | None = None,
     data: Any = None,
     json: Any = None,
-    headers: Optional[LooseHeaders] = None,
-    skip_auto_headers: Optional[Iterable[str]] = None,
-    auth: Optional[BasicAuth] = None,
+    headers: LooseHeaders | None = None,
+    skip_auto_headers: Iterable[str] | None = None,
+    auth: BasicAuth | None = None,
     allow_redirects: bool = True,
     max_redirects: int = 10,
-    compress: Optional[str] = None,
-    chunked: Optional[bool] = None,
+    compress: str | None = None,
+    chunked: bool | None = None,
     expect100: bool = False,
-    raise_for_status: Optional[bool] = None,
+    raise_for_status: bool | None = None,
     read_until_eof: bool = True,
-    proxy: Optional[StrOrURL] = None,
-    proxy_auth: Optional[BasicAuth] = None,
-    timeout: Union[ClientTimeout, object] = sentinel,
-    cookies: Optional[LooseCookies] = None,
+    proxy: StrOrURL | None = None,
+    proxy_auth: BasicAuth | None = None,
+    timeout: ClientTimeout | object = sentinel,
+    cookies: LooseCookies | None = None,
     version: HttpVersion = http.HttpVersion11,
-    connector: Optional[BaseConnector] = None,
-    read_bufsize: Optional[int] = None,
-    loop: Optional[asyncio.AbstractEventLoop] = None,
+    connector: BaseConnector | None = None,
+    read_bufsize: int | None = None,
+    loop: asyncio.AbstractEventLoop | None = None,
 ) -> _SessionRequestContextManager:
     """Constructs and sends a request.
 

@@ -4,9 +4,11 @@ UtilisÃ© par intent_resolver.py si un poll() Ã©choue.
 """
 
 import bpy
+
 from ares.core.logger import get_logger
 
 log = get_logger("ContextPreparer")
+
 
 def ensure_active_object():
     if bpy.context.active_object is None:
@@ -16,6 +18,7 @@ def ensure_active_object():
             log.info(f"ðŸ”§ Objet actif dÃ©fini automatiquement : {objects[0].name}")
         else:
             log.warning("âŒ Aucun objet disponible pour Ãªtre actif.")
+
 
 def ensure_material_exists(obj):
     if not obj.data or not hasattr(obj.data, "materials"):
@@ -29,6 +32,7 @@ def ensure_material_exists(obj):
     else:
         log.debug("ðŸŽ¨ MatÃ©riau dÃ©jÃ  prÃ©sent.")
 
+
 def ensure_material_slot(obj):
     if not obj.material_slots:
         try:
@@ -36,6 +40,7 @@ def ensure_material_slot(obj):
             log.info("ðŸ§© Slot de matÃ©riau ajoutÃ©.")
         except Exception as e:
             log.error(f"ðŸ’¥ Erreur lors de lâ€™ajout du slot de matÃ©riau : {e}")
+
 
 def prepare_context_if_needed(intent: dict) -> bool:
     """

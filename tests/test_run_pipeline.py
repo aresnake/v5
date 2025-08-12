@@ -6,7 +6,9 @@ Vérifie que l'enchaînement phrase → intent → exécution fonctionne
 """
 
 import unittest
+
 from ares.core.run_pipeline import main as run_pipeline
+
 
 class TestRunPipeline(unittest.TestCase):
     def test_basic_intent(self):

@@ -21,6 +21,7 @@ REQUIRED_PACKAGES = [
     "autoflake",
 ]
 
+
 def install(package):
     try:
         subprocess.check_call([sys.executable, "-m", "pip", "install", package])
@@ -28,10 +29,12 @@ def install(package):
     except Exception as e:
         print(f"❌ Erreur d'installation pour {package} : {e}")
 
+
 def main():
     print("🔍 Vérification des dépendances Python...")
     for pkg in REQUIRED_PACKAGES:
         install(pkg)
+
 
 if __name__ == "__main__":
     main()

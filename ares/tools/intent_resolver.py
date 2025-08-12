@@ -1,9 +1,10 @@
 ﻿# ares/tools/intent_resolver.py
-# -*- coding: utf-8 -*-
+
+import traceback
+from collections.abc import Sequence
+from typing import Any
 
 import bpy
-import traceback
-from typing import Any, Tuple, Optional, Sequence
 
 from ares.core.logger import get_logger
 from ares.tools.operator_classifier import classify_operator
@@ -15,7 +16,8 @@ log = get_logger("IntentResolver")
 # Helpers: context preparation
 # ---------------------------
 
-def _find_any_editable_object() -> Optional[bpy.types.Object]:
+
+def _find_any_editable_object() -> bpy.types.Object | None:
     # Priorité : actif → sélection → dernier mesh de la scène
     obj = bpy.context.view_layer.objects.active
     if obj and not obj.hide_get():
@@ -30,7 +32,7 @@ def _find_any_editable_object() -> Optional[bpy.types.Object]:
     return None
 
 
-def ensure_active_object() -> Optional[bpy.types.Object]:
+def ensure_active_object() -> bpy.types.Object | None:
     obj = _find_any_editable_object()
     if obj is None:
         # Créer un cube si rien n'est sélectionnable
@@ -56,7 +58,7 @@ def ensure_active_object() -> Optional[bpy.types.Object]:
     return obj
 
 
-def ensure_active_material(obj: Optional[bpy.types.Object] = None) -> Optional[bpy.types.Material]:
+def ensure_active_material(obj: bpy.types.Object | None = None) -> bpy.types.Material | None:
     if obj is None:
         obj = ensure_active_object()
         if obj is None:
@@ -65,7 +67,9 @@ def ensure_active_material(obj: Optional[bpy.types.Object] = None) -> Optional[b
     mat = getattr(obj, "active_material", None)
     if mat is None:
         # Créer un slot + un matériau et l’assigner
-        mat = bpy.data.materials.get("Blade_AutoMaterial") or bpy.data.materials.new(name="Blade_AutoMaterial")
+        mat = bpy.data.materials.get("Blade_AutoMaterial") or bpy.data.materials.new(
+            name="Blade_AutoMaterial"
+        )
         if obj.data and hasattr(obj.data, "materials"):
             if len(obj.data.materials) == 0:
                 obj.data.materials.append(mat)
@@ -80,29 +84,30 @@ def ensure_active_material(obj: Optional[bpy.types.Object] = None) -> Optional[b
 # Node helpers (Principled)
 # ---------------------------
 
+
 def _normalize_color(value: Any) -> Any:
-    """ Si RGB donné, compléter en RGBA. """
+    """Si RGB donné, compléter en RGBA."""
     if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
         if len(value) == 3:
             return list(value) + [1.0]
     return value
 
 
-def _find_material_output(nt: bpy.types.NodeTree) -> Optional[bpy.types.Node]:
+def _find_material_output(nt: bpy.types.NodeTree) -> bpy.types.Node | None:
     for n in nt.nodes:
         if n.bl_idname == "ShaderNodeOutputMaterial":
             return n
     return None
 
 
-def _find_principled(nt: bpy.types.NodeTree) -> Optional[bpy.types.Node]:
+def _find_principled(nt: bpy.types.NodeTree) -> bpy.types.Node | None:
     for n in nt.nodes:
         if n.bl_idname == "ShaderNodeBsdfPrincipled":
             return n
     return None
 
 
-def _ensure_principled_pipeline(mat: bpy.types.Material) -> Optional[bpy.types.Node]:
+def _ensure_principled_pipeline(mat: bpy.types.Material) -> bpy.types.Node | None:
     """Crée un Principled + branche à l'Output si nécessaire, retourne le Principled."""
     if not mat.use_nodes:
         mat.use_nodes = True
@@ -123,8 +128,8 @@ def _ensure_principled_pipeline(mat: bpy.types.Material) -> Optional[bpy.types.N
 
     # Connecter Principled → Output.Surface si pas déjà connecté
     have_link = False
-    for l in nt.links:
-        if l.to_node == out and getattr(l.to_socket, "name", "") == "Surface":
+    for link in nt.links:
+        if link.to_node == out and getattr(link.to_socket, "name", "") == "Surface":
             have_link = True
             break
     if not have_link:
@@ -160,7 +165,8 @@ def _set_principled_base_color(mat: bpy.types.Material, rgba: Sequence[float]) -
 # Helpers: attribute path parse & set/get
 # ---------------------------------------
 
-def _split_attr_and_index(token: str) -> Tuple[str, Optional[int]]:
+
+def _split_attr_and_index(token: str) -> tuple[str, int | None]:
     """
     Ex.: 'diffuse_color[0]' -> ('diffuse_color', 0)
          'location'         -> ('location', None)
@@ -174,7 +180,7 @@ def _split_attr_and_index(token: str) -> Tuple[str, Optional[int]]:
     return token, None
 
 
-def _resolve_path(root: Any, dotted_path: str) -> Tuple[Any, Optional[str], Optional[int]]:
+def _resolve_path(root: Any, dotted_path: str) -> tuple[Any, str | None, int | None]:
     """
     Navigue jusqu'au parent de l’attribut final.
     Retourne (parent_obj, final_attr_name, index_opt)
@@ -188,10 +194,12 @@ def _resolve_path(root: Any, dotted_path: str) -> Tuple[Any, Optional[str], Opti
 
     for i, tok in enumerate(tokens):
         name, idx = _split_attr_and_index(tok)
-        is_last = (i == len(tokens) - 1)
+        is_last = i == len(tokens) - 1
 
         if not hasattr(current, name):
-            raise AttributeError(f"Chemin invalide: '{type(current).__name__}.{name}' n'existe pas.")
+            raise AttributeError(
+                f"Chemin invalide: '{type(current).__name__}.{name}' n'existe pas."
+            )
 
         if is_last:
             # On s'arrête au parent; on retourne les infos du dernier token
@@ -204,13 +212,15 @@ def _resolve_path(root: Any, dotted_path: str) -> Tuple[Any, Optional[str], Opti
             try:
                 current = current[idx]
             except Exception as e:
-                raise AttributeError(f"Index intermédiaire invalide [{idx}] sur '{name}': {e}") from e
+                raise AttributeError(
+                    f"Index intermédiaire invalide [{idx}] sur '{name}': {e}"
+                ) from e
 
     # Fallback (ne devrait pas arriver)
     return current, None, None
 
 
-def _assign_value_on_attr(parent: Any, attr: str, idx: Optional[int], value: Any) -> None:
+def _assign_value_on_attr(parent: Any, attr: str, idx: int | None, value: Any) -> None:
     target = getattr(parent, attr)
 
     # Si séquence indexable
@@ -238,6 +248,7 @@ def _assign_value_on_attr(parent: Any, attr: str, idx: Optional[int], value: Any
 # --------------------------------
 # Ops execution with smart fallback
 # --------------------------------
+
 
 def _exec_bpy_ops(operator: str, params: dict) -> bool:
     parts = operator.split(".")
@@ -285,6 +296,7 @@ def _exec_bpy_ops(operator: str, params: dict) -> bool:
 # Context execution (direct bpy.context/data)
 # ----------------------------------------
 
+
 def _strip_root_prefix(op: str):
     """
     Retourne (root, path_sans_prefix):
@@ -295,13 +307,13 @@ def _strip_root_prefix(op: str):
       - sinon              -> (bpy.context, op)  # compat
     """
     if op.startswith("bpy.context."):
-        return bpy.context, op[len("bpy.context."):]
+        return bpy.context, op[len("bpy.context.") :]
     if op.startswith("context."):
-        return bpy.context, op[len("context."):]
+        return bpy.context, op[len("context.") :]
     if op.startswith("bpy.data."):
-        return bpy.data, op[len("bpy.data."):]
+        return bpy.data, op[len("bpy.data.") :]
     if op.startswith("data."):
-        return bpy.data, op[len("data."):]
+        return bpy.data, op[len("data.") :]
     return bpy.context, op  # tolérance: chemin relatif à context
 
 
@@ -319,7 +331,9 @@ def _exec_bpy_context(operator: str, params: dict) -> bool:
     obj = ensure_active_object()
 
     # Si le chemin nécessite un matériau actif, on le crée/assigne au besoin
-    needs_material = (".active_material" in operator) or ("material" in operator and "diffuse_color" in operator)
+    needs_material = (".active_material" in operator) or (
+        "material" in operator and "diffuse_color" in operator
+    )
     if needs_material:
         mat = ensure_active_material(obj)
     else:
@@ -364,6 +378,7 @@ def _exec_bpy_context(operator: str, params: dict) -> bool:
 # ---------------------------
 # Public API
 # ---------------------------
+
 
 def resolve_and_execute(intent: dict) -> bool:
     """

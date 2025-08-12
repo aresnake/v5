@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # ares/tools/text2mesh_manager.py
 
 import os
 import uuid
-from typing import Optional, Dict, Any, List
+from typing import Any, Optional
 
 import bpy
 from mathutils import Vector
@@ -15,13 +14,23 @@ except Exception:
     try:
         from ares.core.logger import get_logger
     except Exception:
+
         def get_logger(_):
             class _L:
-                def info(self,*a,**k): pass
-                def warning(self,*a,**k): pass
-                def error(self,*a,**k): pass
-                def exception(self,*a,**k): pass
+                def info(self, *a, **k):
+                    pass
+
+                def warning(self, *a, **k):
+                    pass
+
+                def error(self, *a, **k):
+                    pass
+
+                def exception(self, *a, **k):
+                    pass
+
             return _L()
+
 
 log = get_logger("Text2MeshManager")
 
@@ -42,12 +51,14 @@ DEFAULT_TEST_PATHS = [
     os.path.join(os.path.dirname(__file__), "..", "assets", "test", "spider.obj"),
 ]
 
+
 # ---------- Helpers ----------
-def _first_existing(paths: List[str]) -> Optional[str]:
+def _first_existing(paths: list[str]) -> str | None:
     for p in paths:
         if p and os.path.exists(os.path.abspath(p)):
             return os.path.abspath(p)
     return None
+
 
 def _ensure_object_mode():
     try:
@@ -56,13 +67,15 @@ def _ensure_object_mode():
     except Exception:
         pass
 
+
 def _ensure_view_layer_update():
     try:
         bpy.context.view_layer.update()
     except Exception:
         pass
 
-def _import_model(path: str) -> List[bpy.types.Object]:
+
+def _import_model(path: str) -> list[bpy.types.Object]:
     path = os.path.abspath(path)
     ext = os.path.splitext(path)[1].lower()
     before = set(bpy.data.objects)
@@ -89,7 +102,8 @@ def _import_model(path: str) -> List[bpy.types.Object]:
     new_objs = list(after - before)
     return new_objs
 
-def _select_and_focus(objs: List[bpy.types.Object]):
+
+def _select_and_focus(objs: list[bpy.types.Object]):
     for ob in bpy.context.selected_objects:
         ob.select_set(False)
     for ob in objs:
@@ -100,7 +114,8 @@ def _select_and_focus(objs: List[bpy.types.Object]):
     if objs:
         bpy.context.view_layer.objects.active = objs[0]
 
-def _origin_to_geometry(objs: List[bpy.types.Object]):
+
+def _origin_to_geometry(objs: list[bpy.types.Object]):
     for ob in objs:
         try:
             bpy.context.view_layer.objects.active = ob
@@ -108,7 +123,8 @@ def _origin_to_geometry(objs: List[bpy.types.Object]):
         except Exception:
             pass
 
-def _shade_smooth(objs: List[bpy.types.Object]):
+
+def _shade_smooth(objs: list[bpy.types.Object]):
     for ob in objs:
         if ob.type == 'MESH':
             try:
@@ -117,7 +133,8 @@ def _shade_smooth(objs: List[bpy.types.Object]):
             except Exception:
                 pass
 
-def _auto_scale(objs: List[bpy.types.Object], target_max_dim: float = 2.0):
+
+def _auto_scale(objs: list[bpy.types.Object], target_max_dim: float = 2.0):
     if not objs:
         return
     bbox_min = [1e9, 1e9, 1e9]
@@ -143,6 +160,7 @@ def _auto_scale(objs: List[bpy.types.Object], target_max_dim: float = 2.0):
             pass
     _ensure_view_layer_update()
 
+
 def _postprocess_selected(auto_origin=True, smooth=True, auto_scale_to=None):
     objs = list(bpy.context.selected_objects)
     if not objs:
@@ -162,15 +180,16 @@ class GenerationStatus:
     DONE = "done"
     FAILED = "failed"
 
+
 class GenerationJob:
-    def __init__(self, provider: str, prompt: str, params: Dict[str, Any]):
+    def __init__(self, provider: str, prompt: str, params: dict[str, Any]):
         self.id = str(uuid.uuid4())
         self.provider = provider
         self.prompt = prompt
         self.params = params or {}
         self.status = GenerationStatus.PENDING
         self.message = ""
-        self.asset_path: Optional[str] = None
+        self.asset_path: str | None = None
 
 
 # ---------- Manager ----------
@@ -182,8 +201,9 @@ class Text2MeshManager:
                         si vide ou échec → fallback vers "procedural_spider"
       - "procedural_spider": génère une araignée procédurale (sans asset)
     """
+
     def __init__(self):
-        self.jobs: Dict[str, GenerationJob] = {}
+        self.jobs: dict[str, GenerationJob] = {}
 
     def _success(self, job: GenerationJob, msg: str):
         job.status = GenerationStatus.DONE
@@ -198,10 +218,14 @@ class Text2MeshManager:
         else:
             log.error(msg)
 
-    def _import_and_validate(self, asset_path: str) -> List[bpy.types.Object]:
+    def _import_and_validate(self, asset_path: str) -> list[bpy.types.Object]:
         new_objs = _import_model(asset_path)
         # Filtrer les meshes réellement créés et non vides
-        mesh_objs = [o for o in new_objs if o.type == 'MESH' and getattr(o.data, "vertices", None) and len(o.data.vertices) > 0]
+        mesh_objs = [
+            o
+            for o in new_objs
+            if o.type == 'MESH' and getattr(o.data, "vertices", None) and len(o.data.vertices) > 0
+        ]
         return mesh_objs
 
     def start(self, provider: str, prompt: str, **params) -> str:
@@ -218,13 +242,18 @@ class Text2MeshManager:
             if provider in ("offline_stub", "offline", "local"):
                 local = params.get("asset_path") or _first_existing(DEFAULT_TEST_PATHS)
                 if not local:
-                    self._fail(job, "Aucun fichier local trouvé (définis BLADE_OFFLINE_MODEL_PATH ou place un asset dans ares/assets/test/).")
+                    self._fail(
+                        job,
+                        "Aucun fichier local trouvé (définis BLADE_OFFLINE_MODEL_PATH ou place un asset dans ares/assets/test/).",
+                    )
                     return job.id
 
                 mesh_objs = self._import_and_validate(local)
 
                 if not mesh_objs:
-                    log.warning(f"Import OK mais aucun mesh valide trouvé dans {os.path.basename(local)} → fallback procedural_spider.")
+                    log.warning(
+                        f"Import OK mais aucun mesh valide trouvé dans {os.path.basename(local)} → fallback procedural_spider."
+                    )
                     if generate_spider_mesh is None:
                         self._fail(job, "Fallback procedural_spider indisponible (import KO).")
                         return job.id
@@ -244,7 +273,9 @@ class Text2MeshManager:
                         ob.select_set(False)
                     root.select_set(True)
                     bpy.context.view_layer.objects.active = root
-                    _postprocess_selected(auto_origin=auto_origin, smooth=smooth, auto_scale_to=auto_scale_to)
+                    _postprocess_selected(
+                        auto_origin=auto_origin, smooth=smooth, auto_scale_to=auto_scale_to
+                    )
                     job.asset_path = "[procedural_spider_fallback]"
                     self._success(job, "Generated procedural spider (fallback).")
                     return job.id
@@ -255,7 +286,9 @@ class Text2MeshManager:
                 for ob in mesh_objs:
                     ob.select_set(True)
                 bpy.context.view_layer.objects.active = mesh_objs[0]
-                _postprocess_selected(auto_origin=auto_origin, smooth=smooth, auto_scale_to=auto_scale_to)
+                _postprocess_selected(
+                    auto_origin=auto_origin, smooth=smooth, auto_scale_to=auto_scale_to
+                )
                 job.asset_path = local
                 self._success(job, f"Imported local asset: {os.path.basename(local)}")
                 return job.id
@@ -280,19 +313,24 @@ class Text2MeshManager:
                     ob.select_set(False)
                 root.select_set(True)
                 bpy.context.view_layer.objects.active = root
-                _postprocess_selected(auto_origin=auto_origin, smooth=smooth, auto_scale_to=auto_scale_to)
+                _postprocess_selected(
+                    auto_origin=auto_origin, smooth=smooth, auto_scale_to=auto_scale_to
+                )
                 job.asset_path = "[procedural_spider]"
                 self._success(job, "Generated procedural spider.")
                 return job.id
 
-            self._fail(job, f"Provider '{provider}' non implémenté (utilise 'offline_stub' ou 'procedural_spider').")
+            self._fail(
+                job,
+                f"Provider '{provider}' non implémenté (utilise 'offline_stub' ou 'procedural_spider').",
+            )
             return job.id
 
         except Exception as e:
             self._fail(job, f"[Text2Mesh] Generation failed: {e}", exc=e)
             return job.id
 
-    def get(self, job_id: str) -> Optional[Dict[str, Any]]:
+    def get(self, job_id: str) -> dict[str, Any] | None:
         j = self.jobs.get(job_id)
         if not j:
             return None
@@ -308,6 +346,7 @@ class Text2MeshManager:
 
 # ---------- Singleton ----------
 _manager_singleton: Optional['Text2MeshManager'] = None
+
 
 def get_manager() -> 'Text2MeshManager':
     global _manager_singleton

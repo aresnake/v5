@@ -1,7 +1,8 @@
 ﻿# ares/bots/health_check_bot.py
 
-import os
 import importlib
+import os
+
 from ares.core.logger import get_logger
 from ares.tools.utils_yaml import load_yaml
 
@@ -15,6 +16,7 @@ REQUIRED_MODULES = [
 
 log = get_logger("HealthCheck")
 
+
 def check_voice_config_format():
     try:
         config = load_yaml(CONFIG_PATH)
@@ -27,6 +29,7 @@ def check_voice_config_format():
     except Exception as e:
         return f"âŒ Erreur chargement YAML : {e}"
 
+
 def check_module_imports():
     results = []
     for module_path in REQUIRED_MODULES:
@@ -36,6 +39,7 @@ def check_module_imports():
         except Exception as e:
             results.append(f"âŒ Import {module_path} Ã©chouÃ© : {e}")
     return results
+
 
 def run_health_check():
     os.makedirs("summary", exist_ok=True)
@@ -50,6 +54,7 @@ def run_health_check():
 
     for line in results:
         print(line)
+
 
 if __name__ == "__main__":
     run_health_check()

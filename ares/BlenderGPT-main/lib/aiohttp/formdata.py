@@ -1,5 +1,6 @@
 import io
-from typing import Any, Iterable, List, Optional
+from collections.abc import Iterable
+from typing import Any
 from urllib.parse import urlencode
 
 from multidict import MultiDict, MultiDictProxy
@@ -21,10 +22,10 @@ class FormData:
         self,
         fields: Iterable[Any] = (),
         quote_fields: bool = True,
-        charset: Optional[str] = None,
+        charset: str | None = None,
     ) -> None:
         self._writer = multipart.MultipartWriter("form-data")
-        self._fields: List[Any] = []
+        self._fields: list[Any] = []
         self._is_multipart = False
         self._is_processed = False
         self._quote_fields = quote_fields
@@ -45,9 +46,9 @@ class FormData:
         name: str,
         value: Any,
         *,
-        content_type: Optional[str] = None,
-        filename: Optional[str] = None,
-        content_transfer_encoding: Optional[str] = None,
+        content_type: str | None = None,
+        filename: str | None = None,
+        content_transfer_encoding: str | None = None,
     ) -> None:
 
         if isinstance(value, io.IOBase):
@@ -58,9 +59,7 @@ class FormData:
 
         type_options: MultiDict[str] = MultiDict({"name": name})
         if filename is not None and not isinstance(filename, str):
-            raise TypeError(
-                "filename must be an instance of str. " "Got: %s" % filename
-            )
+            raise TypeError("filename must be an instance of str. " "Got: %s" % filename)
         if filename is None and isinstance(value, io.IOBase):
             filename = guess_filename(value, name)
         if filename is not None:
@@ -107,7 +106,7 @@ class FormData:
                 raise TypeError(
                     "Only io.IOBase, multidict and (name, file) "
                     "pairs allowed, use .add_field() for passing "
-                    "more complex parameters, got {!r}".format(rec)
+                    f"more complex parameters, got {rec!r}"
                 )
 
     def _gen_form_urlencoded(self) -> payload.BytesPayload:
@@ -142,9 +141,7 @@ class FormData:
                         encoding=self._charset,
                     )
                 else:
-                    part = payload.get_payload(
-                        value, headers=headers, encoding=self._charset
-                    )
+                    part = payload.get_payload(value, headers=headers, encoding=self._charset)
             except Exception as exc:
                 raise TypeError(
                     "Can not serialize value type: %r\n "

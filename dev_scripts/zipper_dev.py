@@ -7,7 +7,10 @@ import os
 import zipfile
 
 ADDON_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "ares"))
-OUTPUT_ZIP = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "builds-dev", "blade-addon.zip"))
+OUTPUT_ZIP = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "builds-dev", "blade-addon.zip")
+)
+
 
 def zip_folder(folder_path, output_path):
     with zipfile.ZipFile(output_path, "w", zipfile.ZIP_DEFLATED) as zipf:
@@ -18,6 +21,7 @@ def zip_folder(folder_path, output_path):
                 zipf.write(abs_path, rel_path)
 
     print(f"? ZIP gnr : {output_path}")
+
 
 if __name__ == "__main__":
     zip_folder(ADDON_DIR, OUTPUT_ZIP)

@@ -1,10 +1,9 @@
 ﻿# ✅ Fichier : ares/core/logger.py (UTF-8 safe logger)
 
+import io
 import logging
 import os
 import sys
-import io
-from datetime import datetime
 
 # 🔹 Forcer stdout/stderr en UTF-8 pour éviter les caractères cassés (Windows CP1252)
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
@@ -14,6 +13,7 @@ LOG_FORMAT = "[%(asctime)s][%(name)s] %(message)s"
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 _logger_cache = {}
+
 
 def get_logger(name="Blade"):
     logger = logging.getLogger(name)

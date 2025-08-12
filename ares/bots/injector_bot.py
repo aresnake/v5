@@ -2,6 +2,7 @@
 
 import os
 from datetime import datetime
+
 from ares.core.logger import get_logger
 from ares.tools.utils_yaml import load_yaml, save_yaml
 
@@ -34,7 +35,7 @@ def inject_intents_into_pending(new_intents: list):
 
     for new in new_intents:
         name = new.get("name") or new.get("intent")
-        phrase = new.get("phrase")
+        _phrase = new.get("phrase")  # kept for debug
         if not name or name in existing_names or name in pending_names:
             continue
 
@@ -42,7 +43,7 @@ def inject_intents_into_pending(new_intents: list):
             **new,
             "intent": name,
             "source": "auto_injector",
-            "injected_at": datetime.now().isoformat(timespec="seconds")
+            "injected_at": datetime.now().isoformat(timespec="seconds"),
         }
         pending.append(enriched)
         injected_count += 1

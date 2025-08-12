@@ -5,15 +5,17 @@ RoutineTracker â€“ Enregistre les intents exÃ©cutÃ©s pour dÃ©tecter d
 Les sÃ©quences sont stockÃ©es dans routine_history.json
 """
 
-import os
 import json
+import os
 from datetime import datetime
+
 from ares.core.logger import get_logger
 
 ROUTINE_PATH = os.path.join(os.path.dirname(__file__), "..", "logs", "routine_history.json")
 log = get_logger("RoutineTracker")
 
 os.makedirs(os.path.dirname(ROUTINE_PATH), exist_ok=True)
+
 
 def log_intent(intent_name):
     timestamp = datetime.now().isoformat()

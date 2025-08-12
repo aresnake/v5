@@ -3,13 +3,12 @@ Test All Pipeline – Teste tous les intents dfinis dans voice_config.yaml
 Vrifie que chaque phrase fonctionne correctement dans le pipeline complet.
 """
 
-import os
-import pytest
-from ares.voice.voice_config_manager import load_config
 from ares.core.run_pipeline import main as run_pipeline
+from ares.voice.voice_config_manager import load_config
 
 FAILED = []
 SUCCEEDED = []
+
 
 def test_all_intents():
     config = load_config()

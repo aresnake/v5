@@ -1,5 +1,4 @@
 ﻿# ares/tools/intent_executor.py
-# -*- coding: utf-8 -*-
 
 """
 IntentExecutor – exécute un intent unique ou un lot d'intents avec robustesse.
@@ -33,7 +32,8 @@ from __future__ import annotations
 
 import time
 import traceback
-from typing import Iterable, Dict, Any, List, Tuple, Optional
+from collections.abc import Iterable
+from typing import Any
 
 import bpy
 
@@ -46,6 +46,7 @@ log = get_logger("IntentExecutor")
 # ---------------------------------------------------------------------------
 # Utilities
 # ---------------------------------------------------------------------------
+
 
 def _short_stack() -> str:
     """Retourne un stacktrace compact pour les logs."""
@@ -63,7 +64,7 @@ def _get_bpy_ops_callable(op_path: str):
     return node
 
 
-def _parse_last_index(segment: str) -> Tuple[str, Optional[int]]:
+def _parse_last_index(segment: str) -> tuple[str, int | None]:
     """
     Détecte une indexation finale de type 'attr[0]'.
     Retourne (base_attr, index_int_or_None).
@@ -78,7 +79,7 @@ def _parse_last_index(segment: str) -> Tuple[str, Optional[int]]:
     return segment, None
 
 
-def _walk_bpy_path(path: str) -> Tuple[Any, str, Optional[int]]:
+def _walk_bpy_path(path: str) -> tuple[Any, str, int | None]:
     """
     Navigue dans un chemin de type:
       - "context.scene.frame_end"
@@ -96,7 +97,7 @@ def _walk_bpy_path(path: str) -> Tuple[Any, str, Optional[int]]:
     node = getattr(bpy, root_name)  # bpy.context ou bpy.data
 
     # Découpage custom qui conserve les segments avec quotes/brackets
-    segments: List[str] = []
+    segments: list[str] = []
     cur = ""
     bracket = 0
     quote = None
@@ -132,7 +133,9 @@ def _walk_bpy_path(path: str) -> Tuple[Any, str, Optional[int]]:
         if "[" in seg and seg.endswith("]"):
             before, key = seg.split("[", 1)
             key = key[:-1]  # drop ]
-            if (key.startswith("'") and key.endswith("'")) or (key.startswith('"') and key.endswith('"')):
+            if (key.startswith("'") and key.endswith("'")) or (
+                key.startswith('"') and key.endswith('"')
+            ):
                 key = key[1:-1]
             container = getattr(node, before)
             node = container[key]
@@ -163,6 +166,7 @@ def _set_bpy_path_value(path: str, value: Any):
 # ---------------------------------------------------------------------------
 # Auto-fix minimal du contexte
 # ---------------------------------------------------------------------------
+
 
 def _ensure_active_object() -> bpy.types.Object:
     obj = bpy.context.object
@@ -199,7 +203,7 @@ def _ensure_active_material(obj: bpy.types.Object) -> bpy.types.Material | None:
     return obj.active_material
 
 
-def _auto_fix_context(intent: Dict[str, Any]):
+def _auto_fix_context(intent: dict[str, Any]):
     """
     Applique des corrections minimales en fonction de intent['requires'] / intent['ensure'].
     """
@@ -222,7 +226,8 @@ def _auto_fix_context(intent: Dict[str, Any]):
 # Fallback executors
 # ---------------------------------------------------------------------------
 
-def _try_bpy_ops(intent: Dict[str, Any]) -> Tuple[bool, str]:
+
+def _try_bpy_ops(intent: dict[str, Any]) -> tuple[bool, str]:
     op = intent.get("op")
     if not op:
         return False, "No 'op' provided."
@@ -243,7 +248,7 @@ def _try_bpy_ops(intent: Dict[str, Any]) -> Tuple[bool, str]:
         return False, f"{type(e).__name__}: {e}"
 
 
-def _try_direct_set(intent: Dict[str, Any]) -> Tuple[bool, str]:
+def _try_direct_set(intent: dict[str, Any]) -> tuple[bool, str]:
     direct = intent.get("direct")
     if not direct or not isinstance(direct, dict):
         return False, "No 'direct' dict provided."
@@ -252,7 +257,7 @@ def _try_direct_set(intent: Dict[str, Any]) -> Tuple[bool, str]:
         return False, "No 'path' in 'direct'."
     if path.startswith("bpy."):
         # On demande 'context.' ou 'data.' (sans préfixe 'bpy.')
-        path = path[len("bpy."):]
+        path = path[len("bpy.") :]
     value = direct.get("value")
     try:
         _set_bpy_path_value(path, value)
@@ -265,13 +270,14 @@ def _try_direct_set(intent: Dict[str, Any]) -> Tuple[bool, str]:
 # Public API
 # ---------------------------------------------------------------------------
 
+
 def execute_intent(
-    intent: Dict[str, Any],
+    intent: dict[str, Any],
     *,
     auto_fix: bool = True,
     retries: int = 1,
     delay_s: float = 0.05,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Exécute un intent unique de manière robuste.
 
@@ -285,7 +291,13 @@ def execute_intent(
       }
     """
     name = intent.get("name") or intent.get("id") or "intent"
-    summary: Dict[str, Any] = {"name": name, "ok": False, "stage": None, "message": "", "error": None}
+    summary: dict[str, Any] = {
+        "name": name,
+        "ok": False,
+        "stage": None,
+        "message": "",
+        "error": None,
+    }
 
     if not isinstance(intent, dict):
         msg = "❌ Intent must be a dict."
@@ -335,21 +347,21 @@ def execute_intent(
 
 
 def execute_batch(
-    intents: Iterable[Dict[str, Any]],
+    intents: Iterable[dict[str, Any]],
     *,
     auto_fix: bool = True,
     retries: int = 1,
     delay_s: float = 0.05,
     stop_on_error: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Exécute un lot d'intents et retourne un résumé.
     """
-    details: List[Dict[str, Any]] = []
+    details: list[dict[str, Any]] = []
     ok_count = 0
     failed_count = 0
-    names_success: List[str] = []
-    names_failed: List[str] = []
+    names_success: list[str] = []
+    names_failed: list[str] = []
 
     if not isinstance(intents, Iterable):
         raise TypeError("intents must be iterable of dicts")
@@ -370,7 +382,15 @@ def execute_batch(
             failed_count += 1
             name = (intent or {}).get("name") if isinstance(intent, dict) else "intent"
             names_failed.append(name or "intent")
-            details.append({"name": name, "ok": False, "stage": "failed", "message": "exception", "error": _short_stack()})
+            details.append(
+                {
+                    "name": name,
+                    "ok": False,
+                    "stage": "failed",
+                    "message": "exception",
+                    "error": _short_stack(),
+                }
+            )
             if stop_on_error:
                 break
 
@@ -384,7 +404,9 @@ def execute_batch(
         "details": details,
     }
 
-    log.info(f"📊 Résumé batch intents → total={total} | success={ok_count} | failed={failed_count}")
+    log.info(
+        f"📊 Résumé batch intents → total={total} | success={ok_count} | failed={failed_count}"
+    )
     if failed_count:
         log.warning(f"❗ Intents échoués: {names_failed}")
 

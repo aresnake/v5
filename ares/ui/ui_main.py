@@ -1,25 +1,39 @@
-# -*- coding: utf-8 -*-
 # ares/ui/ui_main.py
 
 from __future__ import annotations
+
 import bpy
 
 # ---------------------------------------------------------------------------
 # Logger paresseux (évite boucles d'import lors du rechargement d'addon)
 # ---------------------------------------------------------------------------
 
+
 def _get_logger():
     try:
         from ares.core.logger import get_logger
+
         return get_logger("UI_Main")
     except Exception:
+
         class _L:
-            def info(self, *a, **k): pass
-            def warning(self, *a, **k): pass
-            def error(self, *a, **k): pass
-            def exception(self, *a, **k): pass
-            def debug(self, *a, **k): pass
+            def info(self, *a, **k):
+                pass
+
+            def warning(self, *a, **k):
+                pass
+
+            def error(self, *a, **k):
+                pass
+
+            def exception(self, *a, **k):
+                pass
+
+            def debug(self, *a, **k):
+                pass
+
         return _L()
+
 
 log = _get_logger()
 
@@ -28,6 +42,7 @@ log = _get_logger()
 # VoiceEngine singleton (évite multiples instances après reload)
 # ---------------------------------------------------------------------------
 
+
 def _get_voice_engine_singleton():
     ns = bpy.app.driver_namespace
     inst = ns.get("BLADE_ENGINE")
@@ -35,20 +50,30 @@ def _get_voice_engine_singleton():
         return inst
     try:
         from ares.voice.voice_engine import VoiceEngine
+
         inst = VoiceEngine()
         ns["BLADE_ENGINE"] = inst
         log.info("VoiceEngine singleton créé et stocké dans driver_namespace.")
         return inst
     except Exception as e:
         log.exception(f"VoiceEngine import/init failed: {e}")
+
         class _Dummy:
             listening = False
             last_transcript = ""
-            def start_listening(self): pass
-            def stop_listening(self): pass
-            def set_auto_execute(self, *_a, **_k): pass
+
+            def start_listening(self):
+                pass
+
+            def stop_listening(self):
+                pass
+
+            def set_auto_execute(self, *_a, **_k):
+                pass
+
         ns["BLADE_ENGINE"] = _Dummy()
         return ns["BLADE_ENGINE"]
+
 
 # Instance globale (réutilisable partout)
 voice_engine = _get_voice_engine_singleton()
@@ -57,6 +82,7 @@ voice_engine = _get_voice_engine_singleton()
 # ---------------------------------------------------------------------------
 # Propriétés Scene
 # ---------------------------------------------------------------------------
+
 
 def _ensure_scene_props():
     S = bpy.types.Scene
@@ -91,12 +117,14 @@ def _ensure_scene_props():
             default=False,
         )
 
+
 _ensure_scene_props()
 
 
 # ---------------------------------------------------------------------------
 # OPERATORS
 # ---------------------------------------------------------------------------
+
 
 class BLADE_OT_start_voice(bpy.types.Operator):
     bl_idname = "blade.start_voice"
@@ -141,6 +169,7 @@ class BLADE_OT_stop_voice(bpy.types.Operator):
 
 class BLADE_OT_toggle_auto_execute(bpy.types.Operator):
     """Synchronise la prop Scene et le moteur voix"""
+
     bl_idname = "blade.toggle_auto_execute"
     bl_label = "Basculer Auto-Execute"
 
@@ -172,6 +201,7 @@ class _SendPhraseBase:
                 pass
 
             from ares.core.run_pipeline import run_pipeline
+
             ok = run_pipeline(phrase)
             if ok:
                 context.scene.blade_last_phrase = phrase
@@ -258,6 +288,7 @@ class BLADE_OT_reject_last_intent(bpy.types.Operator):
 
 class BLADE_OT_render_background(bpy.types.Operator):
     """Lancer un rendu .mp4 en tâche de fond (module optionnel)"""
+
     bl_idname = "blade.render_background"
     bl_label = "Rendu MP4 (background)"
 
@@ -279,6 +310,7 @@ class BLADE_OT_render_background(bpy.types.Operator):
 # ---------------------------------------------------------------------------
 # PANNEAU PRINCIPAL
 # ---------------------------------------------------------------------------
+
 
 class BLADE_PT_main_panel(bpy.types.Panel):
     bl_label = "Blade Voice Assistant"
@@ -311,7 +343,9 @@ class BLADE_PT_main_panel(bpy.types.Panel):
 
         # --- Rendu rapide ---
         row = box.row(align=True)
-        row.operator("blade.render_background", text="Rendu MP4 (background)", icon="RENDER_ANIMATION")
+        row.operator(
+            "blade.render_background", text="Rendu MP4 (background)", icon="RENDER_ANIMATION"
+        )
 
         # --- Conversation (pré-édition + validation) ---
         conv = layout.box()
@@ -321,8 +355,14 @@ class BLADE_PT_main_panel(bpy.types.Panel):
         r.operator("blade.refresh_transcript", text="", icon="FILE_REFRESH")
 
         r = conv.row(align=True)
-        r.operator("blade.send_transcript_phrase", text="Envoyer (transcript)", icon="OUTLINER_DATA_SPEAKER")
-        r.operator("blade.send_manual_phrase", text="Envoyer (champ manuel)", icon="OUTLINER_DATA_SPEAKER")
+        r.operator(
+            "blade.send_transcript_phrase",
+            text="Envoyer (transcript)",
+            icon="OUTLINER_DATA_SPEAKER",
+        )
+        r.operator(
+            "blade.send_manual_phrase", text="Envoyer (champ manuel)", icon="OUTLINER_DATA_SPEAKER"
+        )
 
         if scene.blade_pending_validation:
             conv.separator()
@@ -334,7 +374,9 @@ class BLADE_PT_main_panel(bpy.types.Panel):
         # --- Champ manuel séparé ---
         manual = layout.box()
         manual.prop(scene, "blade_manual_phrase", text="Phrase manuelle")
-        manual.operator("blade.send_manual_phrase", text="Envoyer la phrase", icon="OUTLINER_DATA_SPEAKER")
+        manual.operator(
+            "blade.send_manual_phrase", text="Envoyer la phrase", icon="OUTLINER_DATA_SPEAKER"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -354,6 +396,7 @@ _CLASSES = (
     BLADE_PT_main_panel,
 )
 
+
 def register():
     for cls in _CLASSES:
         bpy.utils.register_class(cls)
@@ -361,6 +404,7 @@ def register():
     # Assure la présence d'un VoiceEngine singleton
     _get_voice_engine_singleton()
     log.info("UI_Main enregistré.")
+
 
 def unregister():
     for cls in reversed(_CLASSES):

@@ -1,8 +1,9 @@
-﻿import bpy
-import traceback
+﻿import traceback
+
 from ares.core.logger import get_logger
 
 log = get_logger("NonOpsExecutor")
+
 
 def execute_non_ops_operator(operator_path: str, params: dict) -> bool:
     """

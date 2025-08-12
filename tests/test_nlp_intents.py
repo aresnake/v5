@@ -1,5 +1,6 @@
 from ares.tools.nlp_intent_matcher import match_intent
 
+
 def test_match_red():
     intents = [
         {"name": "changer_couleur_rouge", "phrases": ["change en rouge"]},

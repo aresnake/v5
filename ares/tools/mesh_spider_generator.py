@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
 # ares/tools/mesh_spider_generator.py
 
+
 import bpy
-import bmesh
 from mathutils import Vector
-from math import radians
-from typing import List, Optional
 
 # Logger (tolérant à l'arborescence)
 try:
@@ -14,13 +11,23 @@ except Exception:
     try:
         from ares.core.logger import get_logger
     except Exception:
-        def get_logger(_): 
-            class _L: 
-                def info(self,*a,**k): pass
-                def warning(self,*a,**k): pass
-                def error(self,*a,**k): pass
-                def exception(self,*a,**k): pass
+
+        def get_logger(_):
+            class _L:
+                def info(self, *a, **k):
+                    pass
+
+                def warning(self, *a, **k):
+                    pass
+
+                def error(self, *a, **k):
+                    pass
+
+                def exception(self, *a, **k):
+                    pass
+
             return _L()
+
 
 log = get_logger("MeshSpiderGenerator")
 
@@ -33,7 +40,7 @@ def _ensure_object_mode():
         pass
 
 
-def _shade_smooth(objs: List[bpy.types.Object]):
+def _shade_smooth(objs: list[bpy.types.Object]):
     for ob in objs:
         if ob.type == 'MESH':
             try:
@@ -68,7 +75,9 @@ def _make_uv_sphere(name: str, radius: float) -> bpy.types.Object:
     return ob
 
 
-def _make_curve_leg(name: str, points: List[Vector], bevel: float, resolution: int = 2) -> bpy.types.Object:
+def _make_curve_leg(
+    name: str, points: list[Vector], bevel: float, resolution: int = 2
+) -> bpy.types.Object:
     # Create a poly Bezier curve with given points, bevel depth → then convert to mesh
     curve_data = bpy.data.curves.new(name=name, type='CURVE')
     curve_data.dimensions = '3D'
@@ -99,7 +108,7 @@ def _make_curve_leg(name: str, points: List[Vector], bevel: float, resolution: i
     return ob
 
 
-def _join_objects(objs: List[bpy.types.Object], name: str) -> Optional[bpy.types.Object]:
+def _join_objects(objs: list[bpy.types.Object], name: str) -> bpy.types.Object | None:
     if not objs:
         return None
     _ensure_object_mode()
@@ -126,7 +135,7 @@ def generate_spider_mesh(
     leg_bevel: float = 0.02,
     leg_vertical_drop: float = 0.25,
     leg_spread: float = 0.55,
-    collection_name: Optional[str] = None,
+    collection_name: str | None = None,
     with_eyes: bool = True,
 ) -> bpy.types.Object:
     """
@@ -153,26 +162,30 @@ def generate_spider_mesh(
     head.parent = root
     _link_to_collection(head, col)
 
-    eyes_objs: List[bpy.types.Object] = []
+    eyes_objs: list[bpy.types.Object] = []
     if with_eyes:
         eye_r = body_radius * 0.15
-        for dx in (-eye_r*0.9, eye_r*0.9):
+        for dx in (-eye_r * 0.9, eye_r * 0.9):
             eye = _make_uv_sphere("Eye", radius=eye_r)
-            eye.location = head.location + Vector((dx, head.scale.y*0 + body_radius*0.2, body_radius*0.05))
+            eye.location = head.location + Vector(
+                (dx, head.scale.y * 0 + body_radius * 0.2, body_radius * 0.05)
+            )
             eye.parent = head
             _link_to_collection(eye, col)
             eyes_objs.append(eye)
 
     # Pattes (4 par côté)
-    leg_objs: List[bpy.types.Object] = []
+    leg_objs: list[bpy.types.Object] = []
     # positions sur l’axe Y depuis arrière -> avant
     y_offsets = [-0.25, 0.0, 0.25, 0.5]
     for side in (-1.0, 1.0):  # gauche / droite
         for i, yoff in enumerate(y_offsets):
             base = Vector((side * (body_radius * 0.8), yoff, body_radius * 1.05))
-            tip  = base + Vector((side * leg_spread, leg_length * 0.65, -leg_vertical_drop))
+            tip = base + Vector((side * leg_spread, leg_length * 0.65, -leg_vertical_drop))
             mid1 = base + Vector((side * (leg_spread * 0.4), leg_length * 0.25, 0.0))
-            mid2 = base + Vector((side * (leg_spread * 0.8), leg_length * 0.50, -leg_vertical_drop * 0.5))
+            mid2 = base + Vector(
+                (side * (leg_spread * 0.8), leg_length * 0.50, -leg_vertical_drop * 0.5)
+            )
 
             leg = _make_curve_leg(
                 name=f"Leg_{'R' if side>0 else 'L'}_{i+1}",

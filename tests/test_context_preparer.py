@@ -4,12 +4,14 @@ Note : ncessite Blender lanc avec environnement bpy
 """
 
 import bpy
+
 from ares.tools.context_preparer import (
     ensure_active_object,
     ensure_material_exists,
     ensure_material_slot,
-    prepare_context_if_needed
+    prepare_context_if_needed,
 )
+
 
 def test_prepare_context_minimal():
     # Cre un cube temporaire pour le test
@@ -24,7 +26,7 @@ def test_prepare_context_minimal():
     # Simulation d’intent avec besoin de matriau
     intent = {
         "name": "test_couleur",
-        "operator": "bpy.context.object.active_material.diffuse_color"
+        "operator": "bpy.context.object.active_material.diffuse_color",
     }
     prepare_context_if_needed(intent)
 

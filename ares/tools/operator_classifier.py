@@ -1,12 +1,12 @@
 ﻿# ares/tools/operator_classifier.py
-# -*- coding: utf-8 -*-
+
 
 import bpy
-from typing import Optional
 
 # --- utils --------------------------------------------------------------------
 
-def _sanitize(op: Optional[str]) -> Optional[str]:
+
+def _sanitize(op: str | None) -> str | None:
     if op is None:
         return None
     op = str(op).strip()
@@ -14,12 +14,12 @@ def _sanitize(op: Optional[str]) -> Optional[str]:
     # Normalize known prefixes
     if op.startswith("bpy.ops."):
         # "bpy.ops.mesh.primitive_cube_add" -> "mesh.primitive_cube_add"
-        return op[len("bpy.ops."):]
+        return op[len("bpy.ops.") :]
     if op.startswith("bpy.context."):
         # "bpy.context.object.location" -> "context.object.location"
-        return "context." + op[len("bpy.context."):]
+        return "context." + op[len("bpy.context.") :]
     if op.startswith("bpy.data."):
-        return "data." + op[len("bpy.data."):]
+        return "data." + op[len("bpy.data.") :]
     return op
 
 
@@ -46,7 +46,8 @@ def _looks_like_context_path(op: str) -> bool:
 
 # --- public -------------------------------------------------------------------
 
-def classify_operator(op: Optional[str]) -> str:
+
+def classify_operator(op: str | None) -> str:
     """
     Returns: "ops" | "context" | "unknown"
     Precedence: context/data > ops

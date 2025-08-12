@@ -5,15 +5,17 @@ SessionDataset â€“ GÃ¨re l'enregistrement passif des actions utilisateur
 UtilisÃ© par l'agent passif pour construire un historique persistent de comportements
 """
 
-import os
 import json
+import os
 import uuid
 from datetime import datetime
+
 from ares.core.logger import get_logger
 
 log = get_logger("SessionDataset")
 DATASET_DIR = os.path.join(os.path.dirname(__file__), "..", "datasets")
 os.makedirs(DATASET_DIR, exist_ok=True)
+
 
 class SessionDataset:
     def __init__(self):

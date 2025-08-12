@@ -4,10 +4,12 @@ Rapport texte complet des erreurs d’intents (hors Blender si besoin).
 """
 
 import os
-from ares.voice.voice_config_manager import load_config
+
 from ares.core.run_pipeline import main as run_pipeline
+from ares.voice.voice_config_manager import load_config
 
 FAILED = []
+
 
 def test_all_intents():
     config = load_config()
@@ -24,7 +26,9 @@ def test_all_intents():
             FAILED.append((name, str(e)))
 
     if FAILED:
-        summary_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "summary", "failed_intents.txt"))
+        summary_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "summary", "failed_intents.txt")
+        )
         os.makedirs(os.path.dirname(summary_path), exist_ok=True)
         with open(summary_path, "w", encoding="utf-8") as f:
             for name, err in FAILED:

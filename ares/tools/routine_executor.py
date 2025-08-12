@@ -5,7 +5,9 @@ RoutineExecutor – Exécute une routine validée (liste d'intents) depuis routi
 """
 
 import os
+
 import yaml
+
 from ares.core.logger import get_logger
 from ares.core.run_pipeline import main as run_pipeline
 
@@ -14,6 +16,7 @@ VOICE_CONFIG = os.path.join(os.path.dirname(__file__), "..", "config", "voice_co
 
 log = get_logger("RoutineExecutor")
 
+
 def load_yaml_list(path):
     try:
         with open(path, encoding="utf-8") as f:
@@ -21,6 +24,7 @@ def load_yaml_list(path):
     except Exception as e:
         log.error(f"Erreur lecture {path} : {e}")
         return []
+
 
 def execute_routine(routine_name: str):
     routines = load_yaml_list(ROUTINES_PATH)
@@ -38,7 +42,8 @@ def execute_routine(routine_name: str):
 
     name_to_phrase = {
         entry.get("name"): entry.get("phrase")
-        for entry in config if entry.get("name") and entry.get("phrase")
+        for entry in config
+        if entry.get("name") and entry.get("phrase")
     }
 
     for intent_name in sequence:
@@ -48,6 +53,7 @@ def execute_routine(routine_name: str):
             run_pipeline(phrase)
         else:
             log.warning(f"? Phrase introuvable pour intent : {intent_name}")
+
 
 if __name__ == "__main__":
     execute_routine("routine_auto_1")

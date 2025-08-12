@@ -6,12 +6,14 @@ Utilise le handler depsgraph pour observer les actions utilisateur.
 """
 
 import bpy
-from ares.core.logger import get_logger
+
 from ares.agents.agent_passif import PassiveAgent
+from ares.core.logger import get_logger
 
 log = get_logger("EditorWatcher")
 handler_registered = False
 passive_agent = PassiveAgent()
+
 
 def depsgraph_handler(scene, depsgraph):
     """
@@ -25,7 +27,7 @@ def depsgraph_handler(scene, depsgraph):
         data_type = type(id_data).__name__
         try:
             data_name = getattr(id_data, "name", None) or str(id_data)
-        except:
+        except Exception:
             data_name = str(id_data)
 
         message = f"{data_type} modifiÃ© : {data_name}"
@@ -34,6 +36,7 @@ def depsgraph_handler(scene, depsgraph):
 
     log.info("ðŸ“¡ Analyse depsgraph terminÃ©e.")
 
+
 def register():
     global handler_registered
     if not handler_registered:
@@ -41,6 +44,7 @@ def register():
         handler_registered = True
         passive_agent.start()
         log.info("âœ… Handler depsgraph_update enregistrÃ©.")
+
 
 def unregister():
     global handler_registered
@@ -57,6 +61,7 @@ def register_handler():
     if not handler_registered:
         bpy.app.handlers.depsgraph_update_post.append(depsgraph_handler)
         handler_registered = True
+
 
 # ?? Optionnel : fonction de nettoyage
 def unregister_handler():

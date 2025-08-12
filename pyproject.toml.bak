@@ -1,4 +1,4 @@
-[tool.black]
+﻿[tool.black]
 line-length = 100
 target-version = ["py311"]
 skip-string-normalization = true
@@ -6,15 +6,15 @@ skip-string-normalization = true
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+# on enlève 'UP' pour arrêter les modernisations risquées dans notre code
+select = ["E","F","I","B"]
+ignore = []
+
 extend-exclude = [
   "dist", "dev", "tests/data", ".git", ".github", "__pycache__",
-  "ares/BlenderGPT-main/**",
-  "ares/**/lib/**",
+  "ares/BlenderGPT-main/**",   # vendor
+  "ares/**/lib/**",            # vendor
 ]
-
-[tool.ruff.lint]
-select = ["E","F","I","B"]
-ignore = ["E501","B904"]
 
 [tool.ruff.lint.per-file-ignores]
 "ares/__init__.py" = ["E402","F401"]
@@ -22,9 +22,11 @@ ignore = ["E501","B904"]
 "ares/bots/__init__.py"   = ["F401"]
 "ares/core/__init__.py"   = ["F401"]
 "ares/tools/__init__.py"  = ["F401"]
-"ares/generators/spiders/__init__.py" = ["F401"]
+
 "tests/run_all_intents_blender.py" = ["E402","B007"]
 "tests/test_voice_config_loader.py" = ["B007"]
+
+# provisoire
 "ares/ui/ui_suggestions.py" = ["E722"]
 "ares/bots/editor_watcher.py" = ["E722"]
 "ares/tools/intent_resolver.py" = ["E741"]

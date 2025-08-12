@@ -9,6 +9,7 @@ from ares.core.logger import get_logger
 
 log = get_logger("CodexAgent")
 
+
 class CodexAgent:
     def __init__(self):
         self.failures = []

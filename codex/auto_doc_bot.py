@@ -1,7 +1,9 @@
 """
 AutoDocBot – Gnre de la documentation depuis le code source
 """
+
 from codex.agent_codex import call_codex
+
 
 def generate_doc_from_code(code: str, filename: str) -> str:
     prompt = f"""Voici le contenu du fichier {filename} :

@@ -11,22 +11,18 @@ MODULES = [
     "ares.core.intent_executor",
     "ares.core.command_router",
     "ares.core.run_pipeline",
-
     # Voice
     "ares.voice.voice_engine",
     "ares.voice.voice_config_manager",
-
     # Bots
     "ares.bots.session_log_enricher_bot",
     "ares.bots.injector_bot",
-
     # Tools
     "ares.tools.operator_classifier",
     "ares.tools.context_preparer",
     "ares.tools.intent_resolver",
     "ares.tools.non_ops_executor",
     "ares.tools.context_executor",
-
     # UI
     "ares.ui.ui_main",
 ]
@@ -37,7 +33,7 @@ for module_name in MODULES:
     try:
         importlib.import_module(module_name)
         print(f"✅ Import réussi : {module_name}")
-    except Exception as e:
+    except Exception:
         print(f"❌ Import échoué : {module_name}")
         traceback.print_exc()
 

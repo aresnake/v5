@@ -1,7 +1,7 @@
 # check_imports.py – Détecte tous les fichiers cassés dans Blade
 
-import os
 import importlib.util
+import os
 import traceback
 
 ROOT = os.path.dirname(__file__)

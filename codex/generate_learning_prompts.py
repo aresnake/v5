@@ -4,10 +4,9 @@
 Transforme les fichiers summary/session_*.json en prompts Codex d'apprentissage dans codex_prompts/for_learning/
 """
 
-import os
 import json
+import os
 from datetime import datetime
-from pathlib import Path
 
 from ares.logger import get_logger
 
@@ -16,6 +15,7 @@ OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "codex_prompts", "for
 
 log = get_logger("LearningPrompts")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+
 
 def build_prompt(session_id, data):
     results = data.get("results", [])
@@ -50,6 +50,7 @@ def build_prompt(session_id, data):
 
     return "\n".join(lines)
 
+
 def run():
     for file in os.listdir(SUMMARY_DIR):
         if file.startswith("session_") and file.endswith(".json"):
@@ -65,6 +66,7 @@ def run():
                 out.write(prompt)
 
             log.info(f"📘 Prompt d'apprentissage généré : {output_path}")
+
 
 if __name__ == "__main__":
     run()

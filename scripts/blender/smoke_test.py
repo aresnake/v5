@@ -1,7 +1,11 @@
-import sys, os, addon_utils
+import os
+import sys
+
+import addon_utils
 
 ADDON = "ares"
 sys.path.insert(0, os.getcwd())  # repo root
+
 
 def main():
     try:
@@ -19,6 +23,7 @@ def main():
     print("[SMOKE]", res)
     if not res.get("ok"):
         raise SystemExit("Smoke failed")
+
 
 if __name__ == "__main__":
     main()

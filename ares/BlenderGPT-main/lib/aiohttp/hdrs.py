@@ -3,14 +3,13 @@
 # After changing the file content call ./tools/gen.py
 # to regenerate the headers parser
 import sys
-from typing import Set
 
 from multidict import istr
 
 if sys.version_info >= (3, 8):
     from typing import Final
 else:
-    from typing_extensions import Final
+    from typing import Final
 
 METH_ANY: Final[str] = "*"
 METH_CONNECT: Final[str] = "CONNECT"
@@ -23,7 +22,7 @@ METH_POST: Final[str] = "POST"
 METH_PUT: Final[str] = "PUT"
 METH_TRACE: Final[str] = "TRACE"
 
-METH_ALL: Final[Set[str]] = {
+METH_ALL: Final[set[str]] = {
     METH_CONNECT,
     METH_HEAD,
     METH_GET,

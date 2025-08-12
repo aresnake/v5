@@ -1,12 +1,14 @@
 ﻿# ares/tools/utils_yaml.py
 
 import os
+
 import yaml
+
 
 def load_yaml(path):
     """Load YAML; return [] if missing or invalid."""
     try:
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             data = yaml.safe_load(f)
             return data if data is not None else []
     except FileNotFoundError:
@@ -14,6 +16,7 @@ def load_yaml(path):
     except Exception as e:
         print(f"⚠️ Erreur lors du chargement YAML : {e}")
         return []
+
 
 def save_yaml(path, data):
     """Save YAML; create parent dirs if needed."""

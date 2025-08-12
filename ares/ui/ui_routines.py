@@ -5,10 +5,11 @@ Panneau UI – Affiche les routines suggérées automatiquement et permet de les
 Valide dans config/routines_validated.yaml
 """
 
-import bpy
 import os
-import yaml
 import shutil
+
+import bpy
+import yaml
 
 from ares.core.logger import get_logger
 
@@ -16,6 +17,7 @@ SUGGESTED_PATH = os.path.join(os.path.dirname(__file__), "..", "config", "routin
 VALIDATED_PATH = os.path.join(os.path.dirname(__file__), "..", "config", "routines_validated.yaml")
 
 log = get_logger("UIRoutines")
+
 
 class BLADE_PT_RoutinesPanel(bpy.types.Panel):
     bl_idname = "BLADE_PT_RoutinesPanel"
@@ -41,10 +43,13 @@ class BLADE_PT_RoutinesPanel(bpy.types.Panel):
             return
 
         for routine in routines:
-            layout.label(text=f"• {routine.get('name')} ({len(routine.get('sequence', []))} intents)")
+            layout.label(
+                text=f"• {routine.get('name')} ({len(routine.get('sequence', []))} intents)"
+            )
 
         layout.separator()
         layout.operator("blade.validate_routines", icon="CHECKMARK")
+
 
 class BLADE_OT_ValidateRoutines(bpy.types.Operator):
     bl_idname = "blade.validate_routines"
@@ -60,9 +65,11 @@ class BLADE_OT_ValidateRoutines(bpy.types.Operator):
             self.report({'WARNING'}, "Aucune routine à valider.")
         return {'FINISHED'}
 
+
 def register():
     bpy.utils.register_class(BLADE_PT_RoutinesPanel)
     bpy.utils.register_class(BLADE_OT_ValidateRoutines)
+
 
 def unregister():
     bpy.utils.unregister_class(BLADE_PT_RoutinesPanel)

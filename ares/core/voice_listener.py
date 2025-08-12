@@ -6,6 +6,7 @@ Utilise la lib SpeechRecognition pour capter le micro et envoyer la phrase
 """
 
 import speech_recognition as sr
+
 from ares.core.logger import get_logger
 from ares.core.run_pipeline import main as run_pipeline
 

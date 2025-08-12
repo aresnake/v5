@@ -5,12 +5,13 @@ AgentManager â€“ Supervise et orchestre tous les agents internes de Blade
 DÃ©marre les agents actifs, passifs, de test ou d'analyse IA (Codex).
 """
 
-from ares.core.logger import get_logger
-from ares.agents.agent_passif import PassiveAgent
 from ares.agents.agent_codex import CodexAgent
+from ares.agents.agent_passif import PassiveAgent
 from ares.agents.agent_tester import IntentTester
+from ares.core.logger import get_logger
 
 log = get_logger("AgentManager")
+
 
 class AgentManager:
     def __init__(self):

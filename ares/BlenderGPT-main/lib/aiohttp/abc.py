@@ -1,19 +1,11 @@
 import asyncio
 import logging
 from abc import ABC, abstractmethod
-from collections.abc import Sized
+from collections.abc import Awaitable, Callable, Generator, Iterable, Sized
 from http.cookies import BaseCookie, Morsel
 from typing import (
     TYPE_CHECKING,
     Any,
-    Awaitable,
-    Callable,
-    Dict,
-    Generator,
-    Iterable,
-    List,
-    Optional,
-    Tuple,
 )
 
 from multidict import CIMultiDict
@@ -70,16 +62,16 @@ class AbstractMatchInfo(ABC):
 
     @property  # pragma: no branch
     @abstractmethod
-    def http_exception(self) -> Optional[HTTPException]:
+    def http_exception(self) -> HTTPException | None:
         """HTTPException instance raised on router's resolving, or None"""
 
     @abstractmethod  # pragma: no branch
-    def get_info(self) -> Dict[str, Any]:
+    def get_info(self) -> dict[str, Any]:
         """Return a dict with additional info useful for introspection"""
 
     @property  # pragma: no branch
     @abstractmethod
-    def apps(self) -> Tuple[Application, ...]:
+    def apps(self) -> tuple[Application, ...]:
         """Stack of nested applications.
 
         Top level application is left-most element.
@@ -121,7 +113,7 @@ class AbstractResolver(ABC):
     """Abstract DNS resolver."""
 
     @abstractmethod
-    async def resolve(self, host: str, port: int, family: int) -> List[Dict[str, Any]]:
+    async def resolve(self, host: str, port: int, family: int) -> list[dict[str, Any]]:
         """Return IP address for given hostname"""
 
     @abstractmethod
@@ -141,11 +133,11 @@ ClearCookiePredicate = Callable[["Morsel[str]"], bool]
 class AbstractCookieJar(Sized, IterableBase):
     """Abstract Cookie Jar."""
 
-    def __init__(self, *, loop: Optional[asyncio.AbstractEventLoop] = None) -> None:
+    def __init__(self, *, loop: asyncio.AbstractEventLoop | None = None) -> None:
         self._loop = get_running_loop(loop)
 
     @abstractmethod
-    def clear(self, predicate: Optional[ClearCookiePredicate] = None) -> None:
+    def clear(self, predicate: ClearCookiePredicate | None = None) -> None:
         """Clear all cookies if no predicate is passed."""
 
     @abstractmethod
@@ -166,7 +158,7 @@ class AbstractStreamWriter(ABC):
 
     buffer_size = 0
     output_size = 0
-    length: Optional[int] = 0
+    length: int | None = 0
 
     @abstractmethod
     async def write(self, chunk: bytes) -> None:
@@ -189,9 +181,7 @@ class AbstractStreamWriter(ABC):
         """Enable HTTP chunked mode"""
 
     @abstractmethod
-    async def write_headers(
-        self, status_line: str, headers: "CIMultiDict[str]"
-    ) -> None:
+    async def write_headers(self, status_line: str, headers: "CIMultiDict[str]") -> None:
         """Write HTTP headers"""
 
 

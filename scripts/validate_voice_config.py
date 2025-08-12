@@ -1,20 +1,37 @@
-import yaml, re, sys
+import sys
 from pathlib import Path
+
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 CFG = ROOT / "ares" / "config" / "voice_config.yaml"
 
 ALLOWED_TOP_KEYS = {
-    "name","phrases","phrase","operator","params","category","description",
-    "op","args","kwargs","direct","requires","ensure","meta",
+    "name",
+    "phrases",
+    "phrase",
+    "operator",
+    "params",
+    "category",
+    "description",
+    "op",
+    "args",
+    "kwargs",
+    "direct",
+    "requires",
+    "ensure",
+    "meta",
 }
+
 
 def load_yaml(path: Path):
     with open(path, "r", encoding="utf-8") as fh:
         return yaml.safe_load(fh) or []
 
+
 def is_context_path(op: str) -> bool:
-    return op.startswith(("context.","bpy.context.","data.","bpy.data.")) or "." in op
+    return op.startswith(("context.", "bpy.context.", "data.", "bpy.data.")) or "." in op
+
 
 def validate(items):
     names, errors = set(), []
@@ -49,15 +66,18 @@ def validate(items):
 
     return errors
 
+
 def main():
     cfg = CFG
     items = load_yaml(cfg)
     errs = validate(items)
     if errs:
         print("❌ voice_config.yaml invalid:")
-        for e in errs: print(" -", e)
+        for e in errs:
+            print(" -", e)
         sys.exit(1)
     print("✅ voice_config.yaml OK")
+
 
 if __name__ == "__main__":
     main()

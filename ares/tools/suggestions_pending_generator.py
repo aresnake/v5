@@ -6,8 +6,9 @@ et regroupe les suggestions dans config/suggestions_pending.yaml
 """
 
 import os
+
 import yaml
-from collections import OrderedDict
+
 from ares.core.logger import get_logger
 
 PROMPT_DIR = os.path.join(os.path.dirname(__file__), "..", "codex_prompts", "from_passive")

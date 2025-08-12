@@ -1,11 +1,10 @@
 ﻿# ares/core/run_pipeline.py
-# -*- coding: utf-8 -*-
 
 from __future__ import annotations
 
 import time
 import traceback
-from typing import Optional, Dict, Any
+from typing import Any
 
 from ares.core.intent_parser import parse_intent
 from ares.core.logger import get_logger
@@ -37,12 +36,12 @@ log = get_logger("RunPipeline")
 
 
 def main(
-    phrase: Optional[str] = None,
+    phrase: str | None = None,
     mode: str = "voice",
     *,
     allow_injection: bool = True,
     dry_run: bool = False,
-    preparsed_intent: Optional[Dict[str, Any]] = None,
+    preparsed_intent: dict[str, Any] | None = None,
     use_pipeline_manager: bool = True,
 ) -> bool:
     """
@@ -71,7 +70,7 @@ def main(
     # ---------------------------
     # 1) Résolution de l'intent
     # ---------------------------
-    intent: Optional[Dict[str, Any]] = None
+    intent: dict[str, Any] | None = None
 
     if preparsed_intent is not None:
         if not isinstance(preparsed_intent, dict):
@@ -143,7 +142,9 @@ def main(
     # ---------------------------
     if dry_run:
         dt = (time.perf_counter() - t0) * 1000.0
-        log.info(f"🧪 Dry-run activé : exécution sautée (parse/log/injection uniquement). ({dt:.1f} ms)")
+        log.info(
+            f"🧪 Dry-run activé : exécution sautée (parse/log/injection uniquement). ({dt:.1f} ms)"
+        )
         return True
 
     try:
@@ -171,6 +172,6 @@ def main(
 
 
 # Alias historique si d'autres modules appellent run_pipeline(text)
-def run_pipeline(phrase: Optional[str] = None, mode: str = "voice") -> bool:
+def run_pipeline(phrase: str | None = None, mode: str = "voice") -> bool:
     """Alias rétro‑compatible."""
     return main(phrase=phrase, mode=mode)

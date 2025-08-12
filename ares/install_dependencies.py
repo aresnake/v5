@@ -1,7 +1,9 @@
 ﻿import os
 import subprocess
 import sys
+
 import pkg_resources
+
 from ares.core.logger import get_logger
 
 log = get_logger("DependencyInstaller")
@@ -17,9 +19,9 @@ ERROR_LOG_FILE = os.path.join(LOGS_DIR, "dependency_errors.log")
 
 # Packages qui nécessitent confirmation (API, gros modules, ou problématiques)
 CONFIRMATION_REQUIRED = {
-    "openai",           # Utilisation d'une API payante
-    "pyaudio",          # Installation parfois complexe
-    "speechrecognition" # Utilise micro et accès audio
+    "openai",  # Utilisation d'une API payante
+    "pyaudio",  # Installation parfois complexe
+    "speechrecognition",  # Utilise micro et accès audio
 }
 
 
@@ -28,7 +30,7 @@ def read_requirements():
     if not os.path.exists(REQUIREMENTS_FILE):
         log.error(f"❌ Fichier requirements.txt introuvable : {REQUIREMENTS_FILE}")
         return []
-    with open(REQUIREMENTS_FILE, "r", encoding="utf-8") as f:
+    with open(REQUIREMENTS_FILE, encoding="utf-8") as f:
         lines = [line.strip() for line in f if line.strip() and not line.startswith("#")]
     return lines
 
@@ -48,7 +50,15 @@ def install_package(pkg_spec):
     """Installe un package silencieusement et gère les erreurs."""
     try:
         subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", "--quiet", "--disable-pip-version-check", pkg_spec]
+            [
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                "--quiet",
+                "--disable-pip-version-check",
+                pkg_spec,
+            ]
         )
         log.info(f"✅ {pkg_spec} installé avec succès.")
         return True

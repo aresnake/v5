@@ -6,16 +6,18 @@ Affiche un résumé clair des problèmes trouvés
 """
 
 import os
+
 import yaml
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "ares", "config", "voice_config.yaml")
+
 
 def check_yaml():
     if not os.path.exists(CONFIG_PATH):
         print("❌ Fichier voice_config.yaml introuvable.")
         return
 
-    with open(CONFIG_PATH, 'r', encoding='utf-8') as f:
+    with open(CONFIG_PATH, encoding='utf-8') as f:
         data = yaml.safe_load(f)
 
     if not isinstance(data, list):
@@ -39,6 +41,7 @@ def check_yaml():
             seen_names.add(name)
 
     print(f"✅ Vérification terminée. {len(data)} intents chargés, {errors} problèmes trouvés.")
+
 
 if __name__ == '__main__':
     check_yaml()

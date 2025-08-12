@@ -1,6 +1,6 @@
 import asyncio
 from contextlib import suppress
-from typing import Any, Optional, Tuple
+from typing import Any
 
 from .base_protocol import BaseProtocol
 from .client_exceptions import (
@@ -14,7 +14,7 @@ from .http import HttpResponseParser, RawResponseMessage
 from .streams import EMPTY_PAYLOAD, DataQueue, StreamReader
 
 
-class ResponseHandler(BaseProtocol, DataQueue[Tuple[RawResponseMessage, StreamReader]]):
+class ResponseHandler(BaseProtocol, DataQueue[tuple[RawResponseMessage, StreamReader]]):
     """Helper class to adapt between Protocol and StreamReader."""
 
     def __init__(self, loop: asyncio.AbstractEventLoop) -> None:
@@ -23,7 +23,7 @@ class ResponseHandler(BaseProtocol, DataQueue[Tuple[RawResponseMessage, StreamRe
 
         self._should_close = False
 
-        self._payload: Optional[StreamReader] = None
+        self._payload: StreamReader | None = None
         self._skip_payload = False
         self._payload_parser = None
 
@@ -31,10 +31,10 @@ class ResponseHandler(BaseProtocol, DataQueue[Tuple[RawResponseMessage, StreamRe
 
         self._tail = b""
         self._upgraded = False
-        self._parser: Optional[HttpResponseParser] = None
+        self._parser: HttpResponseParser | None = None
 
-        self._read_timeout: Optional[float] = None
-        self._read_timeout_handle: Optional[asyncio.TimerHandle] = None
+        self._read_timeout: float | None = None
+        self._read_timeout_handle: asyncio.TimerHandle | None = None
 
     @property
     def upgraded(self) -> bool:
@@ -68,7 +68,7 @@ class ResponseHandler(BaseProtocol, DataQueue[Tuple[RawResponseMessage, StreamRe
     def is_connected(self) -> bool:
         return self.transport is not None and not self.transport.is_closing()
 
-    def connection_lost(self, exc: Optional[BaseException]) -> None:
+    def connection_lost(self, exc: BaseException | None) -> None:
         self._drop_timeout()
 
         if self._payload_parser is not None:
@@ -137,11 +137,11 @@ class ResponseHandler(BaseProtocol, DataQueue[Tuple[RawResponseMessage, StreamRe
     def set_response_params(
         self,
         *,
-        timer: Optional[BaseTimerContext] = None,
+        timer: BaseTimerContext | None = None,
         skip_payload: bool = False,
         read_until_eof: bool = False,
         auto_decompress: bool = True,
-        read_timeout: Optional[float] = None,
+        read_timeout: float | None = None,
         read_bufsize: int = 2**16,
     ) -> None:
         self._skip_payload = skip_payload
@@ -175,9 +175,7 @@ class ResponseHandler(BaseProtocol, DataQueue[Tuple[RawResponseMessage, StreamRe
             self._read_timeout_handle.cancel()
 
         if timeout:
-            self._read_timeout_handle = self._loop.call_later(
-                timeout, self._on_read_timeout
-            )
+            self._read_timeout_handle = self._loop.call_later(timeout, self._on_read_timeout)
         else:
             self._read_timeout_handle = None
 
@@ -223,7 +221,7 @@ class ResponseHandler(BaseProtocol, DataQueue[Tuple[RawResponseMessage, StreamRe
 
                 self._upgraded = upgraded
 
-                payload: Optional[StreamReader] = None
+                payload: StreamReader | None = None
                 for message, payload in messages:
                     if message.should_close:
                         self._should_close = True

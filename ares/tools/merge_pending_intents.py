@@ -2,6 +2,7 @@
 
 import os
 from datetime import datetime
+
 from ares.core.logger import get_logger
 from ares.tools.utils_yaml import load_yaml, save_yaml
 
@@ -10,6 +11,7 @@ log = get_logger("Merger")
 CONFIG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "config"))
 VOICE_CONFIG = os.path.join(CONFIG_DIR, "voice_config.yaml")
 PENDING_PATH = os.path.join(CONFIG_DIR, "intents_pending.yaml")
+
 
 def merge_pending_intents():
     base = load_yaml(VOICE_CONFIG)
@@ -38,7 +40,7 @@ def merge_pending_intents():
             "params": item.get("params", {}),
             "category": item.get("category", "autres"),
             "description": item.get("description", ""),
-            "merged_at": datetime.now().isoformat(timespec="seconds")
+            "merged_at": datetime.now().isoformat(timespec="seconds"),
         }
         to_add.append(clean_item)
 
@@ -53,6 +55,7 @@ def merge_pending_intents():
     # ðŸ§¹ Optionnel : vider les pending
     save_yaml(PENDING_PATH, [])
     log.info("ðŸ§¼ intents_pending.yaml vidÃ© aprÃ¨s fusion.")
+
 
 if __name__ == "__main__":
     merge_pending_intents()

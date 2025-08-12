@@ -1,8 +1,10 @@
 """
 IntentsGenerator – Propose des intents vocaux  partir de logs ou prompts
 """
+
 from codex.agent_codex import call_codex
 from codex.context_builder import extract_context_snippets
+
 
 def generate_intents_from_prompt(prompt: str):
     context = extract_context_snippets()

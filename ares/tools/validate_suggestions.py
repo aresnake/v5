@@ -6,7 +6,7 @@ Les suggestions validÃ©es sont injectÃ©es dans voice_config.yaml
 """
 
 import os
-import yaml
+
 from ares.core.logger import get_logger
 from ares.tools.utils_yaml import load_yaml, save_yaml
 
@@ -15,6 +15,7 @@ VOICE_CONFIG_PATH = os.path.join(CONFIG_DIR, "voice_config.yaml")
 PENDING_PATH = os.path.join(CONFIG_DIR, "suggestions_pending.yaml")
 
 log = get_logger("SuggestionValidator")
+
 
 def validate_all():
     pending = load_yaml(PENDING_PATH)
@@ -44,6 +45,7 @@ def validate_all():
     # Nettoyage
     os.remove(PENDING_PATH)
     log.info("ðŸ—‘ï¸ suggestions_pending.yaml supprimÃ©")
+
 
 if __name__ == "__main__":
     validate_all()

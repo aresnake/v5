@@ -5,15 +5,17 @@ SummaryBuilder â€“ GÃ©nÃ¨re un rÃ©sumÃ© structurÃ© des intents ex
 CrÃ©e un fichier .json ou .md dans le dossier summary/ pour chaque session
 """
 
-import os
 import json
+import os
 from datetime import datetime
+
 from ares.core.logger import get_logger
 
 log = get_logger("SummaryBuilder")
 SUMMARY_DIR = os.path.join(os.path.dirname(__file__), "..", "summary")
 
 os.makedirs(SUMMARY_DIR, exist_ok=True)
+
 
 def build_summary_dict(results: list[tuple[str, str]], session_id: str) -> dict:
     """Construit le dictionnaire rÃ©sumÃ© Ã  partir des rÃ©sultats."""
@@ -26,6 +28,7 @@ def build_summary_dict(results: list[tuple[str, str]], session_id: str) -> dict:
     }
     summary["total_count"] = len(results)
     return summary
+
 
 def save_session_summary(results: list[tuple[str, str]], session_id: str = None):
     """

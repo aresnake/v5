@@ -8,17 +8,20 @@ Enchaîne toute la pipeline d'apprentissage et de suggestions IA Codex :
 - suggestions_pending_generator
 """
 
-import subprocess
 import os
+import subprocess
+
 from ares.logger import get_logger
 
 log = get_logger("CodexPipeline")
 BASE = os.path.dirname(__file__)
 
+
 def run_script(path):
     full_path = os.path.join(BASE, path)
     log.info(f"▶️ Exécution de {path} ...")
     subprocess.run(["python", full_path], check=True)
+
 
 def main():
     try:
@@ -28,6 +31,7 @@ def main():
         log.info("✅ Pipeline Codex terminée avec succès.")
     except Exception as e:
         log.error(f"❌ Erreur dans le pipeline Codex : {e}")
+
 
 if __name__ == "__main__":
     main()

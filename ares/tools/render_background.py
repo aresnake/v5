@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
 # ares/tools/render_background.py
 
 from __future__ import annotations
 
-import os
-import sys
-import tempfile
 import datetime
+import os
 import subprocess
+import tempfile
 import textwrap
-from typing import Tuple, Optional
 
 import bpy
+
 from ares.core.logger import get_logger
 
 log = get_logger("RenderBackground")
@@ -29,7 +27,7 @@ def _detect_blender_binary() -> str:
     return bin_path
 
 
-def _compute_output_path(blend_path: str, output_dir: str) -> Tuple[str, str]:
+def _compute_output_path(blend_path: str, output_dir: str) -> tuple[str, str]:
     base_dir = os.path.dirname(blend_path)
     abs_output_dir = os.path.abspath(os.path.join(base_dir, output_dir))
     _ensure_dir(abs_output_dir)
@@ -44,7 +42,8 @@ def _make_temp_script(mp4_path: str, res_x: int, res_y: int, fps: int) -> str:
     Crée un petit script temporaire qui s'exécutera dans le Blender lancé en background.
     Note: on re-applique les réglages essentiels côté background.
     """
-    script_code = textwrap.dedent(f"""
+    script_code = textwrap.dedent(
+        f"""
         import bpy
 
         scn = bpy.context.scene
@@ -64,7 +63,8 @@ def _make_temp_script(mp4_path: str, res_x: int, res_y: int, fps: int) -> str:
 
         # Rendu animation (frame_start..frame_end)
         bpy.ops.render.render(animation=True)
-    """).strip()
+    """
+    ).strip()
 
     # Emplacement du script temp : dans le dossier temp système (évite permissions)
     tmp_dir = tempfile.gettempdir()
@@ -77,11 +77,11 @@ def _make_temp_script(mp4_path: str, res_x: int, res_y: int, fps: int) -> str:
 
 def run_background_render(
     output_dir: str = "renders_video",
-    resolution: Tuple[int, int] = (1920, 1080),
+    resolution: tuple[int, int] = (1920, 1080),
     fps: int = 24,
     open_console: bool = True,
     quit_current_blender: bool = True,
-) -> Optional[subprocess.Popen]:
+) -> subprocess.Popen | None:
     """
     Lance un rendu MP4 en background dans une **nouvelle fenêtre console** (Windows),
     et (optionnellement) ferme le Blender courant.
@@ -98,7 +98,9 @@ def run_background_render(
     """
     blend_path = bpy.data.filepath
     if not blend_path:
-        log.error("❌ Aucun fichier .blend ouvert. Sauvegarde le .blend avant de lancer un rendu background.")
+        log.error(
+            "❌ Aucun fichier .blend ouvert. Sauvegarde le .blend avant de lancer un rendu background."
+        )
         return None
 
     try:
@@ -152,8 +154,8 @@ def run_background_render(
     try:
         proc = subprocess.Popen(
             cmd,
-            shell=False,                 # important pour gérer les espaces correctement
-            creationflags=creationflags, # nouvelle console Windows
+            shell=False,  # important pour gérer les espaces correctement
+            creationflags=creationflags,  # nouvelle console Windows
         )
         log.info(f"🚀 Rendu lancé (PID={proc.pid}). Sortie: {mp4_path}")
     except Exception as e:

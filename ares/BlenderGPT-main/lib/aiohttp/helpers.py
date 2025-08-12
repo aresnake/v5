@@ -15,30 +15,20 @@ import time
 import warnings
 import weakref
 from collections import namedtuple
+from collections.abc import Callable, Generator, Iterable, Iterator, Mapping
 from contextlib import suppress
 from email.parser import HeaderParser
 from email.utils import parsedate
 from math import ceil
 from pathlib import Path
+from re import Pattern
 from types import TracebackType
 from typing import (
     Any,
-    Callable,
     ContextManager,
-    Dict,
-    Generator,
     Generic,
-    Iterable,
-    Iterator,
-    List,
-    Mapping,
     Optional,
-    Pattern,
-    Set,
-    Tuple,
-    Type,
     TypeVar,
-    Union,
     cast,
 )
 from urllib.parse import quote
@@ -70,8 +60,8 @@ if sys.version_info < (3, 7):
     idna_ssl.patch_match_hostname()
 
     def all_tasks(
-        loop: Optional[asyncio.AbstractEventLoop] = None,
-    ) -> Set["asyncio.Task[Any]"]:
+        loop: asyncio.AbstractEventLoop | None = None,
+    ) -> set["asyncio.Task[Any]"]:
         tasks = list(asyncio.Task.all_tasks(loop))
         return {t for t in tasks if not t.done()}
 
@@ -129,9 +119,7 @@ class noop:
 class BasicAuth(namedtuple("BasicAuth", ["login", "password", "encoding"])):
     """Http basic authentication helper."""
 
-    def __new__(
-        cls, login: str, password: str = "", encoding: str = "latin1"
-    ) -> "BasicAuth":
+    def __new__(cls, login: str, password: str = "", encoding: str = "latin1") -> "BasicAuth":
         if login is None:
             raise ValueError("None is not allowed as login value")
 
@@ -155,9 +143,9 @@ class BasicAuth(namedtuple("BasicAuth", ["login", "password", "encoding"])):
             raise ValueError("Unknown authorization method %s" % auth_type)
 
         try:
-            decoded = base64.b64decode(
-                encoded_credentials.encode("ascii"), validate=True
-            ).decode(encoding)
+            decoded = base64.b64decode(encoded_credentials.encode("ascii"), validate=True).decode(
+                encoding
+            )
         except binascii.Error:
             raise ValueError("Invalid base64 encoding.")
 
@@ -187,7 +175,7 @@ class BasicAuth(namedtuple("BasicAuth", ["login", "password", "encoding"])):
         return "Basic %s" % base64.b64encode(creds).decode(self.encoding)
 
 
-def strip_auth_from_url(url: URL) -> Tuple[URL, Optional[BasicAuth]]:
+def strip_auth_from_url(url: URL) -> tuple[URL, BasicAuth | None]:
     auth = BasicAuth.from_url(url)
     if auth is None:
         return url, None
@@ -195,7 +183,7 @@ def strip_auth_from_url(url: URL) -> Tuple[URL, Optional[BasicAuth]]:
         return url.with_user(None), auth
 
 
-def netrc_from_env() -> Optional[netrc.netrc]:
+def netrc_from_env() -> netrc.netrc | None:
     """Load netrc from file.
 
     Attempt to load it from the path specified by the env-var
@@ -213,8 +201,7 @@ def netrc_from_env() -> Optional[netrc.netrc]:
         except RuntimeError as e:  # pragma: no cover
             # if pathlib can't resolve home, it may raise a RuntimeError
             client_logger.debug(
-                "Could not resolve home directory when "
-                "trying to look for .netrc file: %s",
+                "Could not resolve home directory when " "trying to look for .netrc file: %s",
                 e,
             )
             return None
@@ -238,15 +225,11 @@ def netrc_from_env() -> Optional[netrc.netrc]:
 @attr.s(auto_attribs=True, frozen=True, slots=True)
 class ProxyInfo:
     proxy: URL
-    proxy_auth: Optional[BasicAuth]
+    proxy_auth: BasicAuth | None
 
 
-def proxies_from_env() -> Dict[str, ProxyInfo]:
-    proxy_urls = {
-        k: URL(v)
-        for k, v in getproxies().items()
-        if k in ("http", "https", "ws", "wss")
-    }
+def proxies_from_env() -> dict[str, ProxyInfo]:
+    proxy_urls = {k: URL(v) for k, v in getproxies().items() if k in ("http", "https", "ws", "wss")}
     netrc_obj = netrc_from_env()
     stripped = {k: strip_auth_from_url(v) for k, v in proxy_urls.items()}
     ret = {}
@@ -273,8 +256,8 @@ def proxies_from_env() -> Dict[str, ProxyInfo]:
 
 
 def current_task(
-    loop: Optional[asyncio.AbstractEventLoop] = None,
-) -> "Optional[asyncio.Task[Any]]":
+    loop: asyncio.AbstractEventLoop | None = None,
+) -> "asyncio.Task[Any] | None":
     if sys.version_info >= (3, 7):
         return asyncio.current_task(loop=loop)
     else:
@@ -282,7 +265,7 @@ def current_task(
 
 
 def get_running_loop(
-    loop: Optional[asyncio.AbstractEventLoop] = None,
+    loop: asyncio.AbstractEventLoop | None = None,
 ) -> asyncio.AbstractEventLoop:
     if loop is None:
         loop = asyncio.get_event_loop()
@@ -307,7 +290,7 @@ def isasyncgenfunction(obj: Any) -> bool:
         return False
 
 
-def get_env_proxy_for_url(url: URL) -> Tuple[URL, Optional[BasicAuth]]:
+def get_env_proxy_for_url(url: URL) -> tuple[URL, BasicAuth | None]:
     """Get a permitted proxy for the given URL from the env."""
     if url.host is not None and proxy_bypass(url.host):
         raise LookupError(f"Proxying is disallowed for `{url.host!r}`")
@@ -345,18 +328,14 @@ def parse_mimetype(mimetype: str) -> MimeType:
 
     """
     if not mimetype:
-        return MimeType(
-            type="", subtype="", suffix="", parameters=MultiDictProxy(MultiDict())
-        )
+        return MimeType(type="", subtype="", suffix="", parameters=MultiDictProxy(MultiDict()))
 
     parts = mimetype.split(";")
     params: MultiDict[str] = MultiDict()
     for item in parts[1:]:
         if not item:
             continue
-        key, value = cast(
-            Tuple[str, str], item.split("=", 1) if "=" in item else (item, "")
-        )
+        key, value = cast(tuple[str, str], item.split("=", 1) if "=" in item else (item, ""))
         params.add(key.lower().strip(), value.strip(' "'))
 
     fulltype = parts[0].strip().lower()
@@ -364,20 +343,14 @@ def parse_mimetype(mimetype: str) -> MimeType:
         fulltype = "*/*"
 
     mtype, stype = (
-        cast(Tuple[str, str], fulltype.split("/", 1))
-        if "/" in fulltype
-        else (fulltype, "")
+        cast(tuple[str, str], fulltype.split("/", 1)) if "/" in fulltype else (fulltype, "")
     )
-    stype, suffix = (
-        cast(Tuple[str, str], stype.split("+", 1)) if "+" in stype else (stype, "")
-    )
+    stype, suffix = cast(tuple[str, str], stype.split("+", 1)) if "+" in stype else (stype, "")
 
-    return MimeType(
-        type=mtype, subtype=stype, suffix=suffix, parameters=MultiDictProxy(params)
-    )
+    return MimeType(type=mtype, subtype=stype, suffix=suffix, parameters=MultiDictProxy(params))
 
 
-def guess_filename(obj: Any, default: Optional[str] = None) -> Optional[str]:
+def guess_filename(obj: Any, default: str | None = None) -> str | None:
     name = getattr(obj, "name", None)
     if name and isinstance(name, str) and name[0] != "<" and name[-1] != ">":
         return Path(name).name
@@ -422,16 +395,14 @@ def content_disposition_header(
     params is a dict with disposition params.
     """
     if not disptype or not (TOKEN > set(disptype)):
-        raise ValueError("bad content disposition type {!r}" "".format(disptype))
+        raise ValueError(f"bad content disposition type {disptype!r}")
 
     value = disptype
     if params:
         lparams = []
         for key, val in params.items():
             if not key or not (TOKEN > set(key)):
-                raise ValueError(
-                    "bad content disposition parameter" " {!r}={!r}".format(key, val)
-                )
+                raise ValueError("bad content disposition parameter" f" {key!r}={val!r}")
             if quote_fields:
                 if key.lower() == "filename":
                     qval = quote(val, "", encoding=_charset)
@@ -440,9 +411,7 @@ def content_disposition_header(
                     try:
                         qval = quoted_string(val)
                     except ValueError:
-                        qval = "".join(
-                            (_charset, "''", quote(val, "", encoding=_charset))
-                        )
+                        qval = "".join((_charset, "''", quote(val, "", encoding=_charset)))
                         lparams.append((key + "*", qval))
                     else:
                         lparams.append((key, '"%s"' % qval))
@@ -455,7 +424,7 @@ def content_disposition_header(
 
 
 class _TSelf(Protocol, Generic[_T]):
-    _cache: Dict[str, _T]
+    _cache: dict[str, _T]
 
 
 class reify(Generic[_T]):
@@ -473,7 +442,7 @@ class reify(Generic[_T]):
         self.__doc__ = wrapped.__doc__
         self.name = wrapped.__name__
 
-    def __get__(self, inst: _TSelf[_T], owner: Optional[Type[Any]] = None) -> _T:
+    def __get__(self, inst: _TSelf[_T], owner: type[Any] | None = None) -> _T:
         try:
             try:
                 return inst._cache[self.name]
@@ -520,9 +489,7 @@ _ipv4_regexb = re.compile(_ipv4_pattern.encode("ascii"))
 _ipv6_regexb = re.compile(_ipv6_pattern.encode("ascii"), flags=re.IGNORECASE)
 
 
-def _is_ip_address(
-    regex: Pattern[str], regexb: Pattern[bytes], host: Optional[Union[str, bytes]]
-) -> bool:
+def _is_ip_address(regex: Pattern[str], regexb: Pattern[bytes], host: str | bytes | None) -> bool:
     if host is None:
         return False
     if isinstance(host, str):
@@ -537,18 +504,18 @@ is_ipv4_address = functools.partial(_is_ip_address, _ipv4_regex, _ipv4_regexb)
 is_ipv6_address = functools.partial(_is_ip_address, _ipv6_regex, _ipv6_regexb)
 
 
-def is_ip_address(host: Optional[Union[str, bytes, bytearray, memoryview]]) -> bool:
+def is_ip_address(host: str | bytes | bytearray | memoryview | None) -> bool:
     return is_ipv4_address(host) or is_ipv6_address(host)
 
 
 def next_whole_second() -> datetime.datetime:
     """Return current time rounded up to the next whole second."""
-    return datetime.datetime.now(datetime.timezone.utc).replace(
-        microsecond=0
-    ) + datetime.timedelta(seconds=0)
+    return datetime.datetime.now(datetime.UTC).replace(microsecond=0) + datetime.timedelta(
+        seconds=0
+    )
 
 
-_cached_current_datetime: Optional[int] = None
+_cached_current_datetime: int | None = None
 _cached_formatted_datetime = ""
 
 
@@ -592,7 +559,7 @@ def rfc822_formatted_time() -> str:
     return _cached_formatted_datetime
 
 
-def _weakref_handle(info: "Tuple[weakref.ref[object], str]") -> None:
+def _weakref_handle(info: "tuple[weakref.ref[object], str]") -> None:
     ref, name = info
     ob = ref()
     if ob is not None:
@@ -602,7 +569,7 @@ def _weakref_handle(info: "Tuple[weakref.ref[object], str]") -> None:
 
 def weakref_handle(
     ob: object, name: str, timeout: float, loop: asyncio.AbstractEventLoop
-) -> Optional[asyncio.TimerHandle]:
+) -> asyncio.TimerHandle | None:
     if timeout is not None and timeout > 0:
         when = loop.time() + timeout
         if timeout >= 5:
@@ -614,7 +581,7 @@ def weakref_handle(
 
 def call_later(
     cb: Callable[[], Any], timeout: float, loop: asyncio.AbstractEventLoop
-) -> Optional[asyncio.TimerHandle]:
+) -> asyncio.TimerHandle | None:
     if timeout is not None and timeout > 0:
         when = loop.time() + timeout
         if timeout > 5:
@@ -626,24 +593,18 @@ def call_later(
 class TimeoutHandle:
     """Timeout handle"""
 
-    def __init__(
-        self, loop: asyncio.AbstractEventLoop, timeout: Optional[float]
-    ) -> None:
+    def __init__(self, loop: asyncio.AbstractEventLoop, timeout: float | None) -> None:
         self._timeout = timeout
         self._loop = loop
-        self._callbacks: List[
-            Tuple[Callable[..., None], Tuple[Any, ...], Dict[str, Any]]
-        ] = []
+        self._callbacks: list[tuple[Callable[..., None], tuple[Any, ...], dict[str, Any]]] = []
 
-    def register(
-        self, callback: Callable[..., None], *args: Any, **kwargs: Any
-    ) -> None:
+    def register(self, callback: Callable[..., None], *args: Any, **kwargs: Any) -> None:
         self._callbacks.append((callback, args, kwargs))
 
     def close(self) -> None:
         self._callbacks.clear()
 
-    def start(self) -> Optional[asyncio.Handle]:
+    def start(self) -> asyncio.Handle | None:
         timeout = self._timeout
         if timeout is not None and timeout > 0:
             when = self._loop.time() + timeout
@@ -679,9 +640,9 @@ class TimerNoop(BaseTimerContext):
 
     def __exit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
     ) -> None:
         return
 
@@ -691,34 +652,32 @@ class TimerContext(BaseTimerContext):
 
     def __init__(self, loop: asyncio.AbstractEventLoop) -> None:
         self._loop = loop
-        self._tasks: List[asyncio.Task[Any]] = []
+        self._tasks: list[asyncio.Task[Any]] = []
         self._cancelled = False
 
     def __enter__(self) -> BaseTimerContext:
         task = current_task(loop=self._loop)
 
         if task is None:
-            raise RuntimeError(
-                "Timeout context manager should be used " "inside a task"
-            )
+            raise RuntimeError("Timeout context manager should be used " "inside a task")
 
         if self._cancelled:
-            raise asyncio.TimeoutError from None
+            raise TimeoutError from None
 
         self._tasks.append(task)
         return self
 
     def __exit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_val: Optional[BaseException],
-        exc_tb: Optional[TracebackType],
-    ) -> Optional[bool]:
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> bool | None:
         if self._tasks:
             self._tasks.pop()
 
         if exc_type is asyncio.CancelledError and self._cancelled:
-            raise asyncio.TimeoutError from None
+            raise TimeoutError from None
         return None
 
     def timeout(self) -> None:
@@ -729,7 +688,7 @@ class TimerContext(BaseTimerContext):
             self._cancelled = True
 
 
-def ceil_timeout(delay: Optional[float]) -> async_timeout.Timeout:
+def ceil_timeout(delay: float | None) -> async_timeout.Timeout:
     if delay is None or delay <= 0:
         return async_timeout.timeout(None)
 
@@ -745,8 +704,8 @@ class HeadersMixin:
 
     ATTRS = frozenset(["_content_type", "_content_dict", "_stored_content_type"])
 
-    _content_type: Optional[str] = None
-    _content_dict: Optional[Dict[str, str]] = None
+    _content_type: str | None = None
+    _content_dict: dict[str, str] | None = None
     _stored_content_type = sentinel
 
     def _parse_content_type(self, raw: str) -> None:
@@ -770,7 +729,7 @@ class HeadersMixin:
         return self._content_type  # type: ignore[return-value]
 
     @property
-    def charset(self) -> Optional[str]:
+    def charset(self) -> str | None:
         """The value of charset part for Content-Type HTTP header."""
         raw = self._headers.get(hdrs.CONTENT_TYPE)  # type: ignore[attr-defined]
         if self._stored_content_type != raw:
@@ -778,11 +737,9 @@ class HeadersMixin:
         return self._content_dict.get("charset")  # type: ignore[union-attr]
 
     @property
-    def content_length(self) -> Optional[int]:
+    def content_length(self) -> int | None:
         """The value of Content-Length HTTP header."""
-        content_length = self._headers.get(  # type: ignore[attr-defined]
-            hdrs.CONTENT_LENGTH
-        )
+        content_length = self._headers.get(hdrs.CONTENT_LENGTH)  # type: ignore[attr-defined]
 
         if content_length is not None:
             return int(content_length)
@@ -807,10 +764,7 @@ class ChainMapProxy(Mapping[str, Any]):
         self._maps = tuple(maps)
 
     def __init_subclass__(cls) -> None:
-        raise TypeError(
-            "Inheritance class {} from ChainMapProxy "
-            "is forbidden".format(cls.__name__)
-        )
+        raise TypeError(f"Inheritance class {cls.__name__} from ChainMapProxy " "is forbidden")
 
     def __getitem__(self, key: str) -> Any:
         for mapping in self._maps:
@@ -828,7 +782,7 @@ class ChainMapProxy(Mapping[str, Any]):
         return len(set().union(*self._maps))  # type: ignore[arg-type]
 
     def __iter__(self) -> Iterator[str]:
-        d: Dict[str, Any] = {}
+        d: dict[str, Any] = {}
         for mapping in reversed(self._maps):
             # reuses stored hash values if possible
             d.update(mapping)
@@ -863,16 +817,14 @@ class ETag:
 
 def validate_etag_value(value: str) -> None:
     if value != ETAG_ANY and not _ETAGC_RE.fullmatch(value):
-        raise ValueError(
-            f"Value {value!r} is not a valid etag. Maybe it contains '\"'?"
-        )
+        raise ValueError(f"Value {value!r} is not a valid etag. Maybe it contains '\"'?")
 
 
-def parse_http_date(date_str: Optional[str]) -> Optional[datetime.datetime]:
+def parse_http_date(date_str: str | None) -> datetime.datetime | None:
     """Process a date string, return a datetime object"""
     if date_str is not None:
         timetuple = parsedate(date_str)
         if timetuple is not None:
             with suppress(ValueError):
-                return datetime.datetime(*timetuple[:6], tzinfo=datetime.timezone.utc)
+                return datetime.datetime(*timetuple[:6], tzinfo=datetime.UTC)
     return None

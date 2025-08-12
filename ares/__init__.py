@@ -10,8 +10,10 @@ bl_info = {
     "category": "3D View",
 }
 
-import bpy
 import importlib
+
+import bpy
+
 from ares.core.logger import get_logger
 
 log = get_logger("Init")
@@ -19,13 +21,13 @@ log = get_logger("Init")
 # Modules à recharger dynamiquement (pour dev)
 modules = [
     "core.run_pipeline",
-    "core.intent_parser",             # ✅ correction : anciennement voice.intent_parser
+    "core.intent_parser",  # ✅ correction : anciennement voice.intent_parser
     "tools.intent_resolver",
     "tools.intent_executor",
     "tools.validate_suggestions",
     "tools.utils_yaml",
     "bots.injector_bot",
-    "agents.agent_passif",            # ✅ correction : anciennement bots.passive_agent
+    "agents.agent_passif",  # ✅ correction : anciennement bots.passive_agent
     "bots.editor_watcher",
     "voice.voice_engine",
     "voice.voice_config_manager",
@@ -33,7 +35,7 @@ modules = [
     "ui.ui_suggestions",
     "ui.ui_codex",
     "ui.ui_routines",
-    "ui.ui_spider_generator",         # ✅ ajout UI Spider
+    "ui.ui_spider_generator",  # ✅ ajout UI Spider
 ]
 
 for m in modules:
@@ -42,44 +44,48 @@ for m in modules:
     except Exception as e:
         log.error(f"❌ Erreur au rechargement de {m} : {e}")
 
+
 # Enregistreurs UI / Bots / etc.
 def register():
-    from .ui import (
-        ui_main,
-        ui_suggestions,
-        ui_codex,
-        ui_routines,
-        ui_spider_generator,           # ✅ ajout
-    )
-    from ares.bots.editor_watcher import register_handler
     from ares.agents.agent_passif import activate_passive_agent
+    from ares.bots.editor_watcher import register_handler
+
+    from .ui import (
+        ui_codex,
+        ui_main,
+        ui_routines,
+        ui_spider_generator,  # ✅ ajout
+        ui_suggestions,
+    )
 
     log.info("🔌 Initialisation de Blade Voice Assistant")
     ui_main.register()
     ui_suggestions.register()
     ui_codex.register()
     ui_routines.register()
-    ui_spider_generator.register()     # ✅ ajout
+    ui_spider_generator.register()  # ✅ ajout
 
     register_handler()
     activate_passive_agent()  # Passive seulement
 
+
 def unregister():
-    from .ui import (
-        ui_main,
-        ui_suggestions,
-        ui_codex,
-        ui_routines,
-        ui_spider_generator,           # ✅ ajout
-    )
-    from ares.bots.editor_watcher import unregister_handler
     from ares.agents.agent_passif import deactivate_passive_agent
+    from ares.bots.editor_watcher import unregister_handler
+
+    from .ui import (
+        ui_codex,
+        ui_main,
+        ui_routines,
+        ui_spider_generator,  # ✅ ajout
+        ui_suggestions,
+    )
 
     ui_main.unregister()
     ui_suggestions.unregister()
     ui_codex.unregister()
     ui_routines.unregister()
-    ui_spider_generator.unregister()   # ✅ ajout
+    ui_spider_generator.unregister()  # ✅ ajout
 
     unregister_handler()
     deactivate_passive_agent()

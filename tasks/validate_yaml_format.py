@@ -5,9 +5,11 @@ Teste la validité syntaxique d'un fichier YAML donné
 Usage : python validate_yaml_format.py <chemin/vers/fichier.yaml>
 """
 
-import sys
-import yaml
 import os
+import sys
+
+import yaml
+
 
 def validate_yaml_file(path):
     if not os.path.exists(path):
@@ -15,11 +17,12 @@ def validate_yaml_file(path):
         return
 
     try:
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, encoding='utf-8') as f:
             yaml.safe_load(f)
         print(f"✅ YAML valide : {path}")
     except yaml.YAMLError as e:
         print(f"❌ Erreur YAML dans {path} :\n{e}")
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:

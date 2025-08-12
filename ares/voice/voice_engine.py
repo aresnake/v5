@@ -1,12 +1,9 @@
-﻿# -*- coding: utf-8 -*-
-# ares/voice/voice_engine.py
+﻿# ares/voice/voice_engine.py
 
 from __future__ import annotations
 
 import threading
 import time
-import math
-from typing import Optional
 
 try:
     import bpy
@@ -34,13 +31,13 @@ class VoiceEngine:
     - support Whisper si installé, sinon SpeechRecognition (Google Web API)
     """
 
-    def __init__(self, *, device_index: Optional[int] = None):
-        self.recognizer: Optional["sr.Recognizer"] = None
-        self.microphone: Optional["sr.Microphone"] = None
+    def __init__(self, *, device_index: int | None = None):
+        self.recognizer: sr.Recognizer | None = None
+        self.microphone: sr.Microphone | None = None
         self.device_index = device_index
 
         self.listening = False
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
         self._lock = threading.Lock()
 
         self.last_transcript: str = ""
@@ -161,7 +158,9 @@ class VoiceEngine:
             return ""
         try:
             with self.microphone as source:
-                audio = self.recognizer.listen(source, timeout=timeout, phrase_time_limit=phrase_time_limit)
+                audio = self.recognizer.listen(
+                    source, timeout=timeout, phrase_time_limit=phrase_time_limit
+                )
             return self.recognizer.recognize_google(audio, language="fr-FR").strip()
         except sr.WaitTimeoutError:
             log.debug("⏱️ Timeout d'écoute (SR).")
@@ -177,6 +176,7 @@ class VoiceEngine:
         # L’addon peut installer ces paquets via install_dependencies.py
         try:
             from faster_whisper import WhisperModel  # type: ignore
+
             model = WhisperModel("base", device="cpu")
             log.info("🤖 Whisper backend: faster_whisper (base, cpu)")
             return ("faster_whisper", model)
@@ -185,6 +185,7 @@ class VoiceEngine:
 
         try:
             import whisper  # type: ignore
+
             model = whisper.load_model("base")
             log.info("🤖 Whisper backend: whisper (base)")
             return ("whisper", model)
@@ -206,7 +207,7 @@ class VoiceEngine:
         try:
             with self.microphone as source:
                 audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=6)
-            wav = audio.get_wav_data()
+            _ = audio.get_wav_data()  # debug hook
 
             if backend == "faster_whisper":
                 # faster_whisper attend un chemin de fichier ou un buffer ndarray;
@@ -256,6 +257,7 @@ class VoiceEngine:
         def _run():
             try:
                 from ares.core.run_pipeline import run_pipeline
+
                 run_pipeline(text)
             except Exception as e:
                 log.exception(e)

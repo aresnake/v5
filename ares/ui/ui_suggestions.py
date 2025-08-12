@@ -1,18 +1,21 @@
-# ares/ui/ui_suggestions.py
+﻿# ares/ui/ui_suggestions.py
 
 """
 Panneau UI dans Blender pour afficher et valider les suggestions d'intents IA (passives).
 Permet de visualiser suggestions_pending.yaml et de les valider en un clic.
 """
 
-import bpy
 import os
+
+import bpy
 import yaml
-from ares.tools.validate_suggestions import validate_all
+
 from ares.core.logger import get_logger
+from ares.tools.validate_suggestions import validate_all
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "config", "suggestions_pending.yaml")
 log = get_logger("UISuggestions")
+
 
 class BLADE_PT_SuggestionsPanel(bpy.types.Panel):
     bl_idname = "BLADE_PT_SuggestionsPanel"
@@ -27,39 +30,42 @@ class BLADE_PT_SuggestionsPanel(bpy.types.Panel):
         layout.label(text="Suggestions en attente de validation :")
 
         if not os.path.exists(CONFIG_PATH):
-            layout.label(text="✓ Aucune suggestion trouvée.")
+            layout.label(text="âœ“ Aucune suggestion trouvÃ©e.")
             return
 
         with open(CONFIG_PATH, encoding="utf-8") as f:
             try:
                 suggestions = yaml.safe_load(f)
-            except:
+            except Exception:
                 suggestions = []
 
         if not suggestions:
-            layout.label(text="✓ Aucune suggestion détectée.")
+            layout.label(text="âœ“ Aucune suggestion dÃ©tectÃ©e.")
             return
 
         for intent in suggestions:
             name = intent.get("name", "(sans nom)")
             phrase = intent.get("phrase", "(sans phrase)")
-            layout.label(text=f"• {phrase} ({name})")
+            layout.label(text=f"â€¢ {phrase} ({name})")
 
         layout.separator()
         layout.operator("blade.validate_suggestions", icon="CHECKMARK")
 
+
 class BLADE_OT_ValidateSuggestions(bpy.types.Operator):
     bl_idname = "blade.validate_suggestions"
-    bl_label = "✓ Valider toutes les suggestions"
+    bl_label = "âœ“ Valider toutes les suggestions"
 
     def execute(self, context):
         validate_all()
-        self.report({'INFO'}, "Suggestions validées et injectées.")
+        self.report({'INFO'}, "Suggestions validÃ©es et injectÃ©es.")
         return {'FINISHED'}
+
 
 def register():
     bpy.utils.register_class(BLADE_PT_SuggestionsPanel)
     bpy.utils.register_class(BLADE_OT_ValidateSuggestions)
+
 
 def unregister():
     bpy.utils.unregister_class(BLADE_PT_SuggestionsPanel)

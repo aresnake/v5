@@ -6,14 +6,15 @@ Vérifie que PassiveAgent + EditorWatcher capturent des événements
 et enregistre un résumé markdown
 """
 
-import bpy
-import sys
 import os
+import sys
+
+import bpy
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from ares.editor_watcher import register, unregister
 from ares.agents.agent_passif import PassiveAgent
+from ares.editor_watcher import register, unregister
 from ares.summary.summary_builder import save_session_summary
 
 # 🔁 Initialisation

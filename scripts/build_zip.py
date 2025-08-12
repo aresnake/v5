@@ -1,27 +1,41 @@
-from pathlib import Path
-from datetime import datetime
-import zipfile
-import os
 import subprocess
+import zipfile
+from datetime import datetime
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "dist"
 ADDON_DIR = ROOT / "ares"
 
 EXCLUDES = {
-    "__pycache__", ".git", ".github", "dist", "venv", ".venv", ".mypy_cache",
-    "tests", "scripts", "dev", ".idea", ".vscode",
+    "__pycache__",
+    ".git",
+    ".github",
+    "dist",
+    "venv",
+    ".venv",
+    ".mypy_cache",
+    "tests",
+    "scripts",
+    "dev",
+    ".idea",
+    ".vscode",
 }
+
 
 def git_short_sha():
     try:
-        return subprocess.check_output(["git","rev-parse","--short","HEAD"], cwd=ROOT, text=True).strip()
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, text=True
+        ).strip()
     except Exception:
         return "nogit"
+
 
 def should_include(p: Path) -> bool:
     parts = set(p.parts)
     return not any(x in parts for x in EXCLUDES)
+
 
 def main():
     assert ADDON_DIR.exists(), f"Missing {ADDON_DIR}"
@@ -36,6 +50,7 @@ def main():
             if should_include(rel):
                 z.write(fp, arcname=str(rel))
     print(f"[BUILD] wrote {zpath}")
+
 
 if __name__ == "__main__":
     main()

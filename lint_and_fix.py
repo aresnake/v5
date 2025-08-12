@@ -14,14 +14,18 @@ ROOT = os.path.dirname(__file__)
 TARGET_EXT = ".py"
 
 REPLACEMENTS = [
-    (r"from ares.voice.voice_config_manager import load_config", "from ares.voice.voice_config_manager import load_config"),
+    (
+        r"from ares.voice.voice_config_manager import load_config",
+        "from ares.voice.voice_config_manager import load_config",
+    ),
     (r"", ""),
     (r"même", "même"),
-    (r"raise ImportError\(f\?", "raise ImportError(f\"❌")
+    (r"raise ImportError\(f\?", "raise ImportError(f\"❌"),
 ]
 
+
 def fix_file(path):
-    with open(path, "r", encoding="utf-8", errors="replace") as f:
+    with open(path, encoding="utf-8", errors="replace") as f:
         content = f.read()
 
     original = content
@@ -39,6 +43,7 @@ def run():
         for file in files:
             if file.endswith(TARGET_EXT):
                 fix_file(os.path.join(root, file))
+
 
 if __name__ == "__main__":
     run()
