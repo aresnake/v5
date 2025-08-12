@@ -21,3 +21,5 @@
 *.jpeg binary
 *.wav  binary
 *.zip  binary
+# scripts Windows
+*.bat text eol=crlf
